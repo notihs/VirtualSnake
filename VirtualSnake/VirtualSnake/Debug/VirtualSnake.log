@@ -1,0 +1,3 @@
+﻿  Main.cpp
+c:\users\daniel simões\documents\visual studio 2015\projects\virtualsnake\virtualsnake\main.cpp(25): error C2065: 'tcout': undeclared identifier
+c:\users\daniel simões\documents\visual studio 2015\projects\virtualsnake\virtualsnake\main.cpp(26): error C2065: 'tcin': undeclared identifier
