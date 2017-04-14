@@ -6,42 +6,49 @@ enum effects {vodka, oil, glue, o_vodka, o_oil, o_glue, numberOfElements};
 //TODO: modify this!
 int numberOfObjects = 5;
 
-
-void showMap(TCHAR p[][HEIGHT]) {
+void showMap(TCHAR **map) {
 
 
 	for (int i = 0; i < WIDTH; i++){
 		for (int j = 0; j < HEIGHT; j++){
-			tcout << p[i][j];
+			tcout << map[i][j];
 		}
 		tcout << endl;
 	}
 }
 
-void createMap(){
+TCHAR ** createMap() {
 
-	TCHAR map[WIDTH][HEIGHT];
+	TCHAR ** map;
+
+	map = (TCHAR **)malloc(WIDTH * sizeof(TCHAR *));
+
+	for (int i = 0; i < WIDTH; i++) {
+		map[i] = (TCHAR *)malloc(HEIGHT * sizeof(TCHAR));
+	}
 
 	srand(time(NULL));
 
-	for (int i = 0; i < WIDTH; i++){
-		for (int j = 0; j < HEIGHT; j++){
-			if (i == 0 || j == 0 || i == WIDTH - 1 || j == HEIGHT - 1)
-				
+	for (int i = 0; i < WIDTH; i++) {
+		for (int j = 0; j < HEIGHT; j++) {
+			if (i == 0 || j == 0 || i == WIDTH - 1 || j == HEIGHT - 1) {
 				map[i][j] = TEXT('#');
-			else
-				
+			}
+			else {
 				map[i][j] = TEXT('.');
+			}
 		}
 	}
 
+
 	generateItems(map);
-	
+
 	showMap(map);
 
+	return map;
 }
 
-void generateItems(TCHAR map[][HEIGHT]) {
+void generateItems(TCHAR **map) {
 
 	//enum effects nElements = numberOfElements; //Contains the number of elements 
 
@@ -52,6 +59,8 @@ void generateItems(TCHAR map[][HEIGHT]) {
 
 		x = (rand() % (WIDTH - 2)) + 1;
 		y = (rand() % (HEIGHT - 2)) + 1;
+
+		//tcout << TEXT("trying with ") << x << TEXT(",") << y << endl;
 
 		if (map[x][y] == '.') {
 
@@ -93,15 +102,11 @@ void generateItems(TCHAR map[][HEIGHT]) {
 				break;
 			}
 		}
-		else{
+		else {
 			counterOfObjects--;
 		}
-		//TODO: verifiy if the position is possible!
-		
+
 		counterOfObjects++;
 
 	} while (counterOfObjects < numberOfObjects);
-
-	
 }
-

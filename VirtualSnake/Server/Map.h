@@ -23,11 +23,7 @@ using namespace std;
 #define tstring string
 #endif
 
-/*TCHAR ** createMap();
+TCHAR ** createMap();
 void showMap(TCHAR **);
-void generateItems(TCHAR **map);*/
-
-void generateItems(TCHAR map[][HEIGHT]);
-void createMap();
-void showMap(TCHAR p[][HEIGHT]);
+void generateItems(TCHAR **);
 
