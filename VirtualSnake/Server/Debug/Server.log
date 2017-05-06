@@ -1,4 +1,9 @@
-﻿  Map.cpp
-c:\users\ines\documents\daniel\virtualsnake\server\map.cpp(79): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
+﻿  Clients.cpp
+  Generating Code...
+  Compiling...
+  Server.cpp
+  Map.cpp
+c:\users\ines\documents\daniel\virtualsnake\server\map.cpp(77): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
+  Generating Code...
   Server.vcxproj -> C:\Users\ines\Documents\Daniel\VirtualSnake\Debug\Server.exe
   Server.vcxproj -> C:\Users\ines\Documents\Daniel\VirtualSnake\Debug\Server.pdb (Full PDB)

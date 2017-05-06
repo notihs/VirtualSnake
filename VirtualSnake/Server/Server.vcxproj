@@ -154,6 +154,7 @@
     <ClInclude Include="Clients.h" />
     <ClInclude Include="Constants.h" />
     <ClInclude Include="Includes.h" />
+    <ClInclude Include="Jogo.h" />
     <ClInclude Include="Map.h" />
     <ClInclude Include="Snake.h" />
   </ItemGroup>

@@ -1,4 +1,4 @@
-#pragma once
+                                     #pragma once
 
 #define MAP_ROWS 10
 #define MAP_COLUMNS 20

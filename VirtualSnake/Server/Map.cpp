@@ -1,6 +1,6 @@
 #include "Map.h"
 
-enum effects {vodka, oil, glue, o_vodka, o_oil, o_glue, numberOfElements}; //numberOfElements always the last one, to get the count!
+enum effects {food, ice, grenade, vodka, oil, glue, o_vodka, o_oil, o_glue, numberOfElements}; //numberOfElements always the last one, to get the count!
 
 int numberOfObjects = (MAP_ROWS + MAP_COLUMNS)/4;
 
@@ -115,6 +115,21 @@ void generateItems(TCHAR **map) {
 
 			switch (rand() % numberOfElements)
 			{
+			case food:
+				tcout << x << TEXT(",") << y << TEXT(" food");
+				tcout << endl;
+				map[x][y] = 'F';
+				break;
+			case ice:
+				tcout << x << TEXT(",") << y << TEXT(" ice");
+				tcout << endl;
+				map[x][y] = 'I';
+				break;
+			case grenade:
+				tcout << x << TEXT(",") << y << TEXT(" grenade");
+				tcout << endl;
+				map[x][y] = 'g';
+				break;
 			case vodka:
 				tcout << x << TEXT(",") << y << TEXT(" vodka");
 				tcout << endl;

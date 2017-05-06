@@ -7,4 +7,5 @@ typedef struct Snake {
 	float speed;
 	int headPositionX;
 	int headPositionY;
+	bool alive;
 };
