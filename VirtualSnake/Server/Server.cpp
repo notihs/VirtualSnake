@@ -1,12 +1,5 @@
-#include <windows.h>
-#include <tchar.h>
-#include <io.h>
-#include <fcntl.h>
-#include <stdio.h>
-#include <iostream>
-#include <string>
-
 #include "Map.h"
+#include "Clients.h"
 
 using namespace std;
 
@@ -30,7 +23,13 @@ int _tmain(int argc, TCHAR *argv[]) {
 #define tstring string
 #endif
 
+	TCHAR tecla[256];
 
-	createMap();
-	//tcout << TEXT("ola mundo");
+	//TODO: guardar os arrays de TCHAR 
+	createMap(); //Map.cpp
+
+	_tprintf(TEXT("[SERVER] Servidor lancado! Pressione uma tecla para terminar"));
+	_fgetts(tecla, 256, stdin);
+
+	CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)WaitForClients, NULL, 0, NULL); //Clients.cpp
 }

@@ -1,16 +1,8 @@
 #pragma once
-#include <iostream>
-#include <time.h>
-#include <stdlib.h>
-#include <tchar.h>
-#include <Windows.h>
-
+#include "Includes.h"
+#include "Constants.h"
 
 using namespace std;
-
-#define WIDTH 5
-#define HEIGHT 5
-
 
 #ifdef UNICODE
 #define tcout wcout
@@ -26,4 +18,4 @@ using namespace std;
 TCHAR ** createMap();
 void showMap(TCHAR **);
 void generateItems(TCHAR **);
-
+void generateSnakes(TCHAR **, int);

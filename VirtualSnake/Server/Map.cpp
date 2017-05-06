@@ -1,37 +1,84 @@
 #include "Map.h"
 
-enum effects {vodka, oil, glue, o_vodka, o_oil, o_glue, numberOfElements};
+enum effects {vodka, oil, glue, o_vodka, o_oil, o_glue, numberOfElements}; //numberOfElements always the last one, to get the count!
 
-
-//TODO: modify this!
-int numberOfObjects = 5;
+int numberOfObjects = (MAP_ROWS + MAP_COLUMNS)/4;
 
 void showMap(TCHAR **map) {
 
 
-	for (int i = 0; i < WIDTH; i++){
-		for (int j = 0; j < HEIGHT; j++){
+	for (int i = 0; i < MAP_ROWS; i++){
+		for (int j = 0; j < MAP_COLUMNS; j++){
 			tcout << map[i][j];
 		}
 		tcout << endl;
 	}
 }
 
+void generateSnakes(TCHAR **map, int n) {
+
+	int countSnake = 0;
+	int x, y;
+	int offset = SNAKE_INITIAL_SIZE - 1;
+	int freeCells;
+
+	if (n < 0) {
+		tcout << TEXT("Insira um numero superior a 0 cobras");
+		return;
+	}
+
+	do {
+
+		freeCells = 0;
+
+		y = (rand() % (MAP_ROWS - 2)) + 1;
+		x = (rand() % (MAP_COLUMNS - 2)) + 1;
+
+		tcout << TEXT("entrei no DO!");
+
+			if (x-offset > 0)
+			{
+				tcout << TEXT("a verificar se a posicao x:") << x - offset << " y:" << y << " e valida" << endl;
+
+				for (int i = x-offset; i <= x; i++) {
+					if (map[y][i] == '.') {
+						tcout << TEXT("Free CELL!");
+						freeCells++;
+					}
+				}
+				if (freeCells == SNAKE_INITIAL_SIZE) {
+					for (int i = x - offset; i < x; i++) {
+						map[y][i] = 'x'; //Corpo  da cobra
+					}
+					map[y][x] = '~'; //Cabeca da cobra
+					tcout << TEXT("Cabeca da cobra x:" << x << " y:" << y << endl);
+					countSnake++;
+				}
+				else {
+					continue;
+				}
+				
+			}
+		
+	} while (countSnake < n);
+
+}
+
 TCHAR ** createMap() {
 
 	TCHAR ** map;
 
-	map = (TCHAR **)malloc(WIDTH * sizeof(TCHAR *));
+	map = (TCHAR **)malloc(MAP_ROWS * sizeof(TCHAR *));
 
-	for (int i = 0; i < WIDTH; i++) {
-		map[i] = (TCHAR *)malloc(HEIGHT * sizeof(TCHAR));
+	for (int i = 0; i < MAP_ROWS; i++) {
+		map[i] = (TCHAR *)malloc(MAP_COLUMNS * sizeof(TCHAR));
 	}
 
 	srand(time(NULL));
 
-	for (int i = 0; i < WIDTH; i++) {
-		for (int j = 0; j < HEIGHT; j++) {
-			if (i == 0 || j == 0 || i == WIDTH - 1 || j == HEIGHT - 1) {
+	for (int i = 0; i < MAP_ROWS; i++) {
+		for (int j = 0; j < MAP_COLUMNS; j++) {
+			if (i == 0 || j == 0 || i == MAP_ROWS - 1 || j == MAP_COLUMNS - 1) {
 				map[i][j] = TEXT('#');
 			}
 			else {
@@ -40,6 +87,7 @@ TCHAR ** createMap() {
 		}
 	}
 
+	generateSnakes(map, 2);
 
 	generateItems(map);
 
@@ -57,8 +105,9 @@ void generateItems(TCHAR **map) {
 
 	do {
 
-		x = (rand() % (WIDTH - 2)) + 1;
-		y = (rand() % (HEIGHT - 2)) + 1;
+		tcout << counterOfObjects << TEXT(" - ");
+		x = (rand() % (MAP_ROWS - 2)) + 1;
+		y = (rand() % (MAP_COLUMNS - 2)) + 1;
 
 		//tcout << TEXT("trying with ") << x << TEXT(",") << y << endl;
 
@@ -110,3 +159,5 @@ void generateItems(TCHAR **map) {
 
 	} while (counterOfObjects < numberOfObjects);
 }
+
+//TODO: Replace items erased!
