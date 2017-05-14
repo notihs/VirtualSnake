@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Map.h"
-#include "Jogo.h"
+#include "Game.h"
 #include "Clients.h"
 #include "Constants.h"
 

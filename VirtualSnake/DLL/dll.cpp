@@ -1,47 +1,57 @@
 //DLL.cpp
 #include <windows.h>
+#include <stdio.h>
 //#include "DLL.h"
 
 #include "..\..\VirtualSnake\DLL\dll.h"
 //Para verificar ao carregar a dll que a aplicação irá ocupar mais memória
 char ponteiro[40960];
-//Definição da variável global
-int nDLL = 1234;
-//Exportar a função para ser utilizada fora da DLL
-
-int UmaString(void) {
-	TCHAR str[TAM];
-	_tprintf(TEXT("Dentro da Dll\nIntroduza uma frase:"));
-	_fgetts(str, TAM, stdin);
-	if (_tcslen(str) > 1) //Introduzir mais caracteres do que apenas <enter>
-		return 1;
-	else
-		return 0;
-}
-
-void ImprimeInt(int x) {
-
-	_tprintf(TEXT("Inteiro recebido: %d"), x);
-}
-
 
 //------------------------------------------------------
 
 #define MAX_CLIENTS 4
-#define BUFFER_MAPPING 100
+#define MAP_ROWS 10
+#define MAP_COLUMNS 20
+//#define BUFFER_MAPPING 100
+#define BUFFER_MAPPING (MAP_ROWS * MAP_COLUMNS)
 
+HANDLE canWriteEvent[MAX_CLIENTS];
+HANDLE canReadEvent[MAX_CLIENTS];
+HANDLE canWrite;
+HANDLE canRead;
+HANDLE hMemory;
+TCHAR writeEventName[100];// = TEXT("Write Event ");
+TCHAR readEventName[100];
+TCHAR *writeSemaphoreName = TEXT("Write Semaphore");
+TCHAR *readSemaphoreName = TEXT("Read Semaphore");
+TCHAR *memoryName = TEXT("Memory");
+TCHAR(*PtrMemoria)[MAX_CLIENTS][BUFFER_MAPPING];
+
+
+void generateEventNames() {
+
+	for (int i = 0; i < MAX_CLIENTS; i++) {
+		_stprintf_s(writeEventName, 100, TEXT("Write Event %d"), i);
+		_stprintf_s(readEventName, 100, TEXT("Read Event %d"), i);
+		//sprintf_s(name, 100,"Write Event %d", i);
+
+		canWriteEvent[i] = CreateEvent(NULL, TRUE, TRUE, writeEventName);
+		canReadEvent[i] = CreateEvent(NULL, TRUE, TRUE, readEventName);
+
+		if (canWriteEvent[i] == NULL || canReadEvent[i] == NULL) {
+			_tprintf(TEXT("[Erro]Criação de eventos(%d)\n"), GetLastError());
+			return;
+		}
+
+		//_tprintf(writeEventName);
+		//printf(name);
+	}
+}
+
+//TODO: receber por arg o numero de clientes ligados e ON
 void writeMapInMemory() {
 	
-	//HANDLE hFile;
-	HANDLE canWrite;
-	HANDLE canRead;
-	HANDLE hMemory;
-	TCHAR *writeSemaphoreName = TEXT("Write Semaphore");
-	TCHAR *readSemaphoreName = TEXT("Read Semaphore");
-	TCHAR *memoryName = TEXT("Memory");
-	TCHAR(*PtrMemoria)[MAX_CLIENTS][BUFFER_MAPPING];
-
-	//hFile = CreateFile(TEXT("teste.txt"), GENERIC_READ | GENERIC_WRITE, FILE_SHARE_WRITE, NULL, OPEN_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
+	generateEventNames();
 
 	canWrite = CreateSemaphore(NULL, MAX_CLIENTS, MAX_CLIENTS, writeSemaphoreName);
 	canRead = CreateSemaphore(NULL, 0, MAX_CLIENTS, readSemaphoreName);
@@ -62,11 +72,13 @@ void writeMapInMemory() {
 
 	for (int i = 0; i < 100; i++)
 	{
-		WaitForSingleObject(canWrite, INFINITE);
+		//WaitForSingleObject(canWrite, INFINITE);
+		WaitForMultipleObjects(MAX_CLIENTS, canWriteEvent, TRUE, INFINITE);
 		_tprintf(TEXT("Escrever para buffer %i\n"), i);
 		//for(int j = 0; j < MAX_CLIENTS; j++)
-		_stprintf_s((*PtrMemoria)[i%MAX_CLIENTS], BUFFER_MAPPING, TEXT("Escritor-%i\n"), i); //TODO: mudar o i%MAX_CLIENTS no array
-
+		_stprintf_s((*PtrMemoria)[i%MAX_CLIENTS], BUFFER_MAPPING, TEXT("Escritor-%i\n"), i); 
+		//_stprintf_s((*PtrMemoria)[i%MAX_CLIENTS], BUFFER_MAPPING, TEXT("Escritor-%i\n"), i);
+		ResetEvent(canWriteEvent[i%MAX_CLIENTS]);
 		Sleep(1000);
 		ReleaseSemaphore(canRead, 1, NULL);
 	}
@@ -80,16 +92,7 @@ void writeMapInMemory() {
 
 TCHAR* readMapInMemory() {
 
-	//	HANDLE hFile;
-	HANDLE canWrite;
-	HANDLE canRead;
-	HANDLE hMemory;
-	TCHAR *writeSemaphoreName = TEXT("Write Semaphore");
-	TCHAR *readSemaphoreName = TEXT("Read Semaphore");
-	TCHAR *memoryName = TEXT("Memory");
-	TCHAR(*PtrMemoria)[MAX_CLIENTS][BUFFER_MAPPING];
-
-	//hFile = CreateFile(TEXT("teste.txt"), GENERIC_READ | GENERIC_WRITE, FILE_SHARE_WRITE, NULL, OPEN_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
+	generateEventNames();
 
 	canWrite = CreateSemaphore(NULL, MAX_CLIENTS, MAX_CLIENTS, writeSemaphoreName);
 	canRead = CreateSemaphore(NULL, 0, MAX_CLIENTS, readSemaphoreName);
@@ -108,11 +111,12 @@ TCHAR* readMapInMemory() {
 		return NULL;
 	}
 
-	for (int i = 0; i < 100; i++)
+	for (int i = 0;; ++i)
 	{
 		WaitForSingleObject(canRead, INFINITE);
 		_tprintf((*PtrMemoria)[i % MAX_CLIENTS]); // Reader reads data
-		ReleaseSemaphore(canWrite, 1, NULL);
+		//ReleaseSemaphore(canWrite, 1, NULL);
+		SetEvent(canWriteEvent[i%MAX_CLIENTS]);
 	}
 	UnmapViewOfFile(PtrMemoria);
 	CloseHandle(canWrite);

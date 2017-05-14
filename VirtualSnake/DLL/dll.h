@@ -20,19 +20,11 @@
 #endif
 extern "C"
 {
-	//Variável global da DLL
-	extern DLL_IMP_API int nDLL;
-
-	//Funções a serem exportadas/importadas
-	DLL_IMP_API int UmaString(void);
-
-	DLL_IMP_API void ImprimeInt(int x);
-
-
-	////TODO: DELETE ABOVE FUNCTIONS/VARS
 
 	DLL_IMP_API void writeMapInMemory();
 
 	DLL_IMP_API TCHAR* readMapInMemory();
+
+	void generateEventNames();
 
 }

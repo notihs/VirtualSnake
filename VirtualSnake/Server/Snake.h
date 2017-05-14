@@ -8,4 +8,4 @@ typedef struct Snake {
 	int headPositionX;
 	int headPositionY;
 	bool alive;
-};
+}Snake;
