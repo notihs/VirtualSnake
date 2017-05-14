@@ -1,9 +1,6 @@
-﻿  Clients.cpp
-  Generating Code...
-  Compiling...
-  Server.cpp
-  Map.cpp
-c:\users\ines\documents\daniel\virtualsnake\server\map.cpp(77): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
-  Generating Code...
-  Server.vcxproj -> C:\Users\ines\Documents\Daniel\VirtualSnake\Debug\Server.exe
-  Server.vcxproj -> C:\Users\ines\Documents\Daniel\VirtualSnake\Debug\Server.pdb (Full PDB)
+﻿  Server.cpp
+c:\users\daniel simões\dropbox\so2 - 2016-2017\trabalho\virtualsnake\server\snake.h(11): warning C4091: 'typedef ': ignored on left of 'Snake' when no variable is declared
+c:\users\daniel simões\dropbox\so2 - 2016-2017\trabalho\virtualsnake\server\jogo.h(9): warning C4091: 'typedef ': ignored on left of 'Jogo' when no variable is declared
+c:\users\daniel simões\dropbox\so2 - 2016-2017\trabalho\virtualsnake\server\server.cpp(25): warning C4101: 'jogo': unreferenced local variable
+  Server.vcxproj -> C:\Users\Daniel Simões\Dropbox\SO2 - 2016-2017\Trabalho\VirtualSnake\Debug\Server.exe
+  Server.vcxproj -> C:\Users\Daniel Simões\Dropbox\SO2 - 2016-2017\Trabalho\VirtualSnake\Debug\Server.pdb (Full PDB)

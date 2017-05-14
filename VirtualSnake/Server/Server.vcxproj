@@ -156,7 +156,11 @@
     <ClInclude Include="Includes.h" />
     <ClInclude Include="Jogo.h" />
     <ClInclude Include="Map.h" />
+    <ClInclude Include="Server.h" />
     <ClInclude Include="Snake.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <Library Include="..\Debug\DLL.lib" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

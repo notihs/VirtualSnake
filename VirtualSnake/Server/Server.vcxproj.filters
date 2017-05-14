@@ -44,5 +44,11 @@
     <ClInclude Include="Jogo.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Server.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Library Include="..\Debug\DLL.lib" />
   </ItemGroup>
 </Project>
