@@ -15,15 +15,15 @@ void showMap(TCHAR **map) {
 	}
 }
 
-void generateSnakes(TCHAR **map, int n) {
+void generateSnakes(TCHAR **map) {
 
 	int countSnake = 0;
 	int x, y;
 	int offset = SNAKE_INITIAL_SIZE - 1;
 	int freeCells;
 
-	if (n < 0) {
-		tcout << TEXT("Insira um numero superior a 0 cobras");
+	if (MAX_PLAYERS < 0) {
+		tcout << TEXT("Insira um numero superior a 0 cobras/jogadores");
 		return;
 	}
 
@@ -34,15 +34,15 @@ void generateSnakes(TCHAR **map, int n) {
 		y = (rand() % (MAP_ROWS - 2)) + 1;
 		x = (rand() % (MAP_COLUMNS - 2)) + 1;
 
-		tcout << TEXT("entrei no DO!");
+		//tcout << TEXT("entrei no DO!");
 
 			if (x-offset > 0)
 			{
-				tcout << TEXT("a verificar se a posicao x:") << x - offset << " y:" << y << " e valida" << endl;
+				//tcout << TEXT("a verificar se a posicao x:") << x - offset << " y:" << y << " e valida" << endl;
 
 				for (int i = x-offset; i <= x; i++) {
 					if (map[y][i] == '.') {
-						tcout << TEXT("Free CELL!");
+						//tcout << TEXT("Free CELL!");
 						freeCells++;
 					}
 				}
@@ -60,7 +60,7 @@ void generateSnakes(TCHAR **map, int n) {
 				
 			}
 		
-	} while (countSnake < n);
+	} while (countSnake < MAX_PLAYERS);
 
 }
 
@@ -87,11 +87,11 @@ TCHAR ** createMap() {
 		}
 	}
 
-	generateSnakes(map, 2);
+	generateSnakes(map);
 
 	generateItems(map);
 
-	showMap(map);
+	//showMap(map);
 
 	return map;
 }
@@ -105,7 +105,7 @@ void generateItems(TCHAR **map) {
 
 	do {
 
-		tcout << counterOfObjects << TEXT(" - ");
+		//tcout << counterOfObjects << TEXT(" - ");
 		x = (rand() % (MAP_ROWS - 2)) + 1;
 		y = (rand() % (MAP_COLUMNS - 2)) + 1;
 
@@ -116,52 +116,52 @@ void generateItems(TCHAR **map) {
 			switch (rand() % numberOfElements)
 			{
 			case food:
-				tcout << x << TEXT(",") << y << TEXT(" food");
-				tcout << endl;
+				/*tcout << x << TEXT(",") << y << TEXT(" food");
+				tcout << endl;*/
 				map[x][y] = 'F';
 				break;
 			case ice:
-				tcout << x << TEXT(",") << y << TEXT(" ice");
-				tcout << endl;
+				/*tcout << x << TEXT(",") << y << TEXT(" ice");
+				tcout << endl;*/
 				map[x][y] = 'I';
 				break;
 			case grenade:
-				tcout << x << TEXT(",") << y << TEXT(" grenade");
-				tcout << endl;
+				/*tcout << x << TEXT(",") << y << TEXT(" grenade");
+				tcout << endl;*/
 				map[x][y] = 'g';
 				break;
 			case vodka:
-				tcout << x << TEXT(",") << y << TEXT(" vodka");
-				tcout << endl;
+				/*tcout << x << TEXT(",") << y << TEXT(" vodka");
+				tcout << endl;*/
 				map[x][y] = 'V';
 				break;
 			case oil:
-				tcout << x << TEXT(",") << y << TEXT(" oil");
-				tcout << endl;
+				/*tcout << x << TEXT(",") << y << TEXT(" oil");
+				tcout << endl;*/
 				map[x][y] = 'O';
 				break;
 			case glue:
-				tcout << x << TEXT(",") << y << TEXT(" glue");
-				tcout << endl;
+				/*tcout << x << TEXT(",") << y << TEXT(" glue");
+				tcout << endl;*/
 				map[x][y] = 'G';
 				break;
 			case o_vodka:
-				tcout << x << TEXT(",") << y << TEXT(" o_vodka");
-				tcout << endl;
+				/*tcout << x << TEXT(",") << y << TEXT(" o_vodka");
+				tcout << endl;*/
 				map[x][y] = 'B';
 				break;
 			case o_oil:
-				tcout << x << TEXT(",") << y << TEXT(" o_oil");
-				tcout << endl;
+				/*tcout << x << TEXT(",") << y << TEXT(" o_oil");
+				tcout << endl;*/
 				map[x][y] = 'P';
 				break;
 			case o_glue:
-				tcout << x << TEXT(",") << y << TEXT(" o_glue");
-				tcout << endl;
+				/*tcout << x << TEXT(",") << y << TEXT(" o_glue");
+				tcout << endl;*/
 				map[x][y] = 'H';
 				break;
 			default:
-				tcout << x << TEXT(",") << y << TEXT(" default");
+				tcout << x << TEXT(",") << y << TEXT(" default! DEU ASNEIRA! PROCURAR BUG NO MAP.CPP");
 				tcout << endl;
 				break;
 			}

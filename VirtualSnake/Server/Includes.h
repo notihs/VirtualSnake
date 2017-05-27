@@ -8,5 +8,3 @@
 #include <string>
 #include <fcntl.h>
 #include <io.h>
-
-#include "Constants.h"

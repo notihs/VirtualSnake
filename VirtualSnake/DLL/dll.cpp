@@ -9,120 +9,185 @@ char ponteiro[40960];
 
 //------------------------------------------------------
 
-#define MAX_CLIENTS 4
-#define MAP_ROWS 10
-#define MAP_COLUMNS 20
-//#define BUFFER_MAPPING 100
-#define BUFFER_MAPPING (MAP_ROWS * MAP_COLUMNS)
 
-HANDLE canWriteEvent[MAX_CLIENTS];
-HANDLE canReadEvent[MAX_CLIENTS];
-HANDLE canWrite;
-HANDLE canRead;
-HANDLE hMemory;
-TCHAR writeEventName[100];// = TEXT("Write Event ");
-TCHAR readEventName[100];
-TCHAR *writeSemaphoreName = TEXT("Write Semaphore");
-TCHAR *readSemaphoreName = TEXT("Read Semaphore");
-TCHAR *memoryName = TEXT("Memory");
-TCHAR(*PtrMemoria)[MAX_CLIENTS][BUFFER_MAPPING];
+//EVENTOS
+TCHAR eventKeyPressedName[TAM];
+HANDLE hEventKeyPressed[MAX_PLAYERS];
 
+TCHAR eventNewClientName[TAM] = TEXT("Event new client");
+HANDLE hEventNewClient;
 
-void generateEventNames() {
+//MUTEX
+TCHAR mutexWritingKeyName[TAM];
+HANDLE hMutexWritingKey[MAX_PLAYERS];
 
-	for (int i = 0; i < MAX_CLIENTS; i++) {
-		_stprintf_s(writeEventName, 100, TEXT("Write Event %d"), i);
-		_stprintf_s(readEventName, 100, TEXT("Read Event %d"), i);
+//MAPA
+HANDLE hMapMemory;
+TCHAR *mapInMemoryName = TEXT("MapMemory");
+TCHAR(*ptrMapInMemory)[MAP_ROWS][MAP_COLUMNS];
+
+//TECLAS
+int ownId = -1;
+HANDLE hKeysMemory;
+TCHAR *keysInMemoryName = TEXT("KeysMemory");
+TCHAR(*ptrKeysInMemory)[MAX_PLAYERS]; //LIST OF KEYS:
+									  //e -> empty
+									  //o -> occupied
+									  //u -> up
+									  //d -> down
+									  //l -> left
+									  //r -> right
+void initSynchHandles() {
+
+	for (int i = 0; i < MAX_PLAYERS; i++) {
+		_stprintf_s(eventKeyPressedName, TAM, TEXT("Key Pressed Event %d"), i);
+		_stprintf_s(mutexWritingKeyName, TAM, TEXT("Key Writing Mutex %d"), i);
+		//_stprintf_s(readEventName, 100, TEXT("Read Event %d"), i);
 		//sprintf_s(name, 100,"Write Event %d", i);
 
-		canWriteEvent[i] = CreateEvent(NULL, TRUE, TRUE, writeEventName);
-		canReadEvent[i] = CreateEvent(NULL, TRUE, TRUE, readEventName);
+		hEventKeyPressed[i] = CreateEvent(NULL, TRUE, FALSE, eventKeyPressedName);
+		
+		hMutexWritingKey[i] = CreateMutex(NULL, FALSE, mutexWritingKeyName);
+		//canReadEvent[i] = CreateEvent(NULL, TRUE, TRUE, readEventName);
 
-		if (canWriteEvent[i] == NULL || canReadEvent[i] == NULL) {
+		//|| canReadEvent[i] == NULL) {
+		if (hEventKeyPressed[i] == NULL){
 			_tprintf(TEXT("[Erro]Criação de eventos(%d)\n"), GetLastError());
 			return;
 		}
+		else if (hMutexWritingKey[i] == NULL) {
+			_tprintf(TEXT("[Erro]Criação de mutexes(%d)\n"), GetLastError());
+			return;
+		}
 
-		//_tprintf(writeEventName);
+		//_tprintf(eventKeyPressedName);
 		//printf(name);
+	}
+
+	hEventNewClient = CreateEvent(NULL, TRUE, FALSE, eventNewClientName); //Evento criado a FALSE 
+																		  //Set -> mete a TRUE
+																		  //Reset -> mete a FALSE
+
+	if (hEventNewClient == NULL) {
+		_tprintf(TEXT("[Erro]Criação de evento(%d)\n"), GetLastError());
+		return;
 	}
 }
 
-//TODO: receber por arg o numero de clientes ligados e ON
-void writeMapInMemory() {
-	
-	generateEventNames();
+void initMemory() {
 
-	canWrite = CreateSemaphore(NULL, MAX_CLIENTS, MAX_CLIENTS, writeSemaphoreName);
-	canRead = CreateSemaphore(NULL, 0, MAX_CLIENTS, readSemaphoreName);
-	hMemory = CreateFileMapping((HANDLE)0xFFFFFFFF, NULL, PAGE_READWRITE, 0
-		, sizeof(TCHAR[MAX_CLIENTS][BUFFER_MAPPING]), memoryName);
+	hKeysMemory = CreateFileMapping((HANDLE)0xFFFFFFFF, NULL, PAGE_READWRITE, 0
+		, sizeof(TCHAR[MAX_PLAYERS]), keysInMemoryName);
 
-	if (canWrite == NULL || canRead == NULL || hMemory == NULL) {
+	hMapMemory = CreateFileMapping((HANDLE)0xFFFFFFFF, NULL, PAGE_READWRITE, 0
+		, sizeof(TCHAR[MAP_ROWS][MAP_COLUMNS]), mapInMemoryName);
+
+	if (hKeysMemory == NULL || hMapMemory == NULL) {
 		_tprintf(TEXT("[Erro]Criação de objectos do Windows(%d)\n"), GetLastError());
 		return;
 	}
 
-	PtrMemoria = (TCHAR(*)[MAX_CLIENTS][BUFFER_MAPPING])MapViewOfFile(hMemory
-		, FILE_MAP_WRITE, 0, 0, sizeof(TCHAR[MAX_CLIENTS][BUFFER_MAPPING]));
-	if (PtrMemoria == NULL) {
+	ptrKeysInMemory = (TCHAR(*)[MAX_PLAYERS])MapViewOfFile(hKeysMemory
+		, FILE_MAP_WRITE, 0, 0, sizeof(TCHAR[MAX_PLAYERS]));
+
+	ptrMapInMemory = (TCHAR(*)[MAP_ROWS][MAP_COLUMNS])MapViewOfFile(hMapMemory
+		, FILE_MAP_WRITE, 0, 0, sizeof(TCHAR[MAP_ROWS][MAP_COLUMNS]));
+
+	if (ptrKeysInMemory == NULL || ptrMapInMemory == NULL) {
 		_tprintf(TEXT("[Erro]Mapeamento da memória partilhada(%d)\n"), GetLastError());
 		return;
 	}
 
-	for (int i = 0; i < 100; i++)
-	{
-		//WaitForSingleObject(canWrite, INFINITE);
-		WaitForMultipleObjects(MAX_CLIENTS, canWriteEvent, TRUE, INFINITE);
-		_tprintf(TEXT("Escrever para buffer %i\n"), i);
-		//for(int j = 0; j < MAX_CLIENTS; j++)
-		_stprintf_s((*PtrMemoria)[i%MAX_CLIENTS], BUFFER_MAPPING, TEXT("Escritor-%i\n"), i); 
-		//_stprintf_s((*PtrMemoria)[i%MAX_CLIENTS], BUFFER_MAPPING, TEXT("Escritor-%i\n"), i);
-		ResetEvent(canWriteEvent[i%MAX_CLIENTS]);
-		Sleep(1000);
-		ReleaseSemaphore(canRead, 1, NULL);
+}
+
+
+void initArrayOfKeys() { //TODO: Em principio, nao deve haver problemas de sincronizacao
+
+	for (int i = 0; i < MAX_PLAYERS; i++) {
+		(*ptrKeysInMemory)[i] = 'e';
+		tcout << TEXT("Posicao ") << i << TEXT(": ") << (*ptrKeysInMemory)[i] << endl;
 	}
-	UnmapViewOfFile(PtrMemoria);
-	CloseHandle(canWrite);
-	CloseHandle(canRead);
-	CloseHandle(hMemory);
 
 	return;
 }
 
-TCHAR* readMapInMemory() {
+void readKeys() { //TODO: read only when event happens!
 
-	generateEventNames();
-
-	canWrite = CreateSemaphore(NULL, MAX_CLIENTS, MAX_CLIENTS, writeSemaphoreName);
-	canRead = CreateSemaphore(NULL, 0, MAX_CLIENTS, readSemaphoreName);
-	hMemory = CreateFileMapping((HANDLE)0xFFFFFFFF, NULL, PAGE_READWRITE, 0
-		, sizeof(TCHAR[MAX_CLIENTS][BUFFER_MAPPING]), memoryName);
-
-	if (canWrite == NULL || canRead == NULL || hMemory == NULL) {
-		_tprintf(TEXT("[Erro]Criação de objectos do Windows(%d)\n"), GetLastError());
-		return NULL;
+	for (int i = 0; i < MAX_PLAYERS; i++) {
+		//(*ptrKeysInMemory)[i] = 'e';
+		tcout << TEXT("Posicao ") << i << TEXT(": ") << (*ptrKeysInMemory)[i] << endl;
 	}
 
-	PtrMemoria = (TCHAR(*)[MAX_CLIENTS][BUFFER_MAPPING])MapViewOfFile(hMemory
-		, FILE_MAP_WRITE, 0, 0, sizeof(TCHAR[MAX_CLIENTS][BUFFER_MAPPING]));
-	if (PtrMemoria == NULL) {
-		_tprintf(TEXT("[Erro]Mapeamento da memória partilhada(%d)\n"), GetLastError());
-		return NULL;
+}
+
+void newKeyPressed(TCHAR tecla) { 
+	WaitForSingleObject(hMutexWritingKey[ownId], INFINITE);
+
+	(*ptrKeysInMemory)[ownId] = tecla;
+
+	ReleaseMutex(hMutexWritingKey[ownId]);
+	SetEvent(hEventKeyPressed);
+
+}
+
+int getOwnKeyArrayPosition() {
+
+	for (int i = 0; i < MAX_PLAYERS; i++) {
+		if ((*ptrKeysInMemory)[i] == 'e') {
+
+			WaitForSingleObject(hMutexWritingKey[i], INFINITE);
+
+			(*ptrKeysInMemory)[i] = 'o'; 
+			
+			ReleaseMutex(hMutexWritingKey[i]);
+
+			ownId = i;
+			SetEvent(hEventNewClient);
+			return i;
+		}
+		//tcout << TEXT("Posicao ") << i << TEXT(": ") << (*ptrKeysInMemory)[i] << endl;
 	}
 
-	for (int i = 0;; ++i)
-	{
-		WaitForSingleObject(canRead, INFINITE);
-		_tprintf((*PtrMemoria)[i % MAX_CLIENTS]); // Reader reads data
-		//ReleaseSemaphore(canWrite, 1, NULL);
-		SetEvent(canWriteEvent[i%MAX_CLIENTS]);
-	}
-	UnmapViewOfFile(PtrMemoria);
-	CloseHandle(canWrite);
-	CloseHandle(canRead);
-	CloseHandle(hMemory);
+	return -1; //Nao ha posicoes livres
+}
 
-	return TEXT("teste");
+void writeMapInMemory(TCHAR ** map) {
+
+	for (int i = 0; i < MAP_ROWS; i++) {
+		for (int j = 0; j < MAP_COLUMNS; j++) {
+			(*ptrMapInMemory)[i][j] = map[i][j];
+			tcout << (*ptrMapInMemory)[i][j];
+		}
+		tcout << endl;
+	}
+
+	return;
+}
+
+TCHAR** readMapInMemory() {
+
+	TCHAR ** map;
+
+	map = (TCHAR **)malloc(MAP_ROWS * sizeof(TCHAR *));
+
+	for (int i = 0; i < MAP_ROWS; i++) {
+		map[i] = (TCHAR *)malloc(MAP_COLUMNS * sizeof(TCHAR));
+	}
+
+	for (int i = 0; i < MAP_ROWS; i++) {
+		for (int j = 0; j < MAP_COLUMNS; j++) {
+			map[i][j] = (*ptrMapInMemory)[i][j];
+			tcout << map[i][j];
+		}
+		tcout << endl;
+	}
+
+	return map;
+}
+
+//TODO: close all handles here!
+void destroyMap() {
+	UnmapViewOfFile(ptrMapInMemory);
+	CloseHandle(hMapMemory);
 }
 

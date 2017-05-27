@@ -1,6 +1,6 @@
 #pragma once
 #include "Includes.h"
-#include "Constants.h"
+#include "..\DLL\CommonConstants.h"
 
 using namespace std;
 
@@ -18,4 +18,4 @@ using namespace std;
 TCHAR ** createMap();
 void showMap(TCHAR **);
 void generateItems(TCHAR **);
-void generateSnakes(TCHAR **, int);
+void generateSnakes(TCHAR **);

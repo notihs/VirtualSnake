@@ -1,5 +1,6 @@
 #pragma once
 #include "Includes.h"
+#include "..\DLL\CommonConstants.h"
 
 typedef struct Snake {
 	int size;
@@ -9,3 +10,5 @@ typedef struct Snake {
 	int headPositionY;
 	bool alive;
 }Snake;
+
+Snake initOneSnake(int);

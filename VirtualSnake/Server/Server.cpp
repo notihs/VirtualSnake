@@ -1,5 +1,4 @@
 #include "Server.h"
-#include "..\DLL\dll.h"
 
 using namespace std;
 
@@ -22,16 +21,40 @@ int _tmain(int argc, TCHAR *argv[]) {
 #endif
 
 	TCHAR tecla[256];
+	//TCHAR **map;
 	Game game;
 	 
+	for (int i = 0; i < MAX_PLAYERS; i++) {
+		game.snake[i] = initOneSnake(i); //Snake.h
+	}
+	game.map = createMap(); //Map.cpp
+
+	//Local clients Configuration
+
+	initMemory();
+	initSynchHandles();
+	initArrayOfKeys();
+	writeMapInMemory(game.map); //DLL
+
 	
-	//TODO: guardar os arrays de TCHAR 
-	createMap(); //Map.cpp
+	//CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)WaitForLocalClients, (LPVOID)hEventNewClient, 0, NULL); //Clients.cpp
+	//CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)WaitForLocalClients, NULL, 0, NULL);
 
-	writeMapInMemory(); //DLL
 
-	_tprintf(TEXT("[SERVER] Servidor lancado! Pressione uma tecla para terminar"));
-	_fgetts(tecla, 256, stdin);
 
-	CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)WaitForClients, NULL, 0, NULL); //Clients.cpp
+	//Remote Clients configuration!
+
+	//CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)WaitForRemoteClients, NULL, 0, NULL); //Clients.cpp
+
+
+
+	while (1) {
+		_tprintf(TEXT("[SERVER] Servidor lancado! Pressione uma tecla para terminar"));
+		_fgetts(tecla, 256, stdin);
+
+		readKeys();
+	}
+	destroyMap();
 }
+
+

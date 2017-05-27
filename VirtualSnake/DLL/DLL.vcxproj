@@ -146,6 +146,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="CommonConstants.h" />
     <ClInclude Include="dll.h" />
   </ItemGroup>
   <ItemGroup>
