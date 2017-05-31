@@ -1,6 +1,7 @@
 #pragma once
 #include "Includes.h"
 #include "..\DLL\CommonConstants.h"
+//#include "Game.h"
 
 using namespace std;
 
@@ -15,7 +16,18 @@ using namespace std;
 #define tstring string
 #endif
 
+typedef struct Snake {
+	int size;
+	int id;
+	float speed;
+	int headPositionX;
+	int headPositionY;
+	int tailPositionX;
+	int tailPositionY;
+	bool alive;
+}Snake;
+
 TCHAR ** createMap();
 void showMap(TCHAR **);
 void generateItems(TCHAR **);
-void generateSnakes(TCHAR **);
+void generateSnakes(TCHAR **, int, Snake*);

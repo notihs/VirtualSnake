@@ -17,6 +17,9 @@ HANDLE hEventKeyPressed[MAX_PLAYERS];
 TCHAR eventNewClientName[TAM] = TEXT("Event new client");
 HANDLE hEventNewClient;
 
+TCHAR eventGameStartedName[TAM] = TEXT("Event game started");
+HANDLE hEventGameStarted;
+
 //MUTEX
 TCHAR mutexWritingKeyName[TAM];
 HANDLE hMutexWritingKey[MAX_PLAYERS];
@@ -64,11 +67,13 @@ void initSynchHandles() {
 		//printf(name);
 	}
 
+	hEventGameStarted = CreateEvent(NULL, TRUE, FALSE, eventGameStartedName);
+
 	hEventNewClient = CreateEvent(NULL, TRUE, FALSE, eventNewClientName); //Evento criado a FALSE 
 																		  //Set -> mete a TRUE
 																		  //Reset -> mete a FALSE
 
-	if (hEventNewClient == NULL) {
+	if (hEventNewClient == NULL || hEventGameStarted == NULL) {
 		_tprintf(TEXT("[Erro]Criação de evento(%d)\n"), GetLastError());
 		return;
 	}
@@ -125,8 +130,8 @@ void newKeyPressed(TCHAR tecla) {
 
 	(*ptrKeysInMemory)[ownId] = tecla;
 
-	ReleaseMutex(hMutexWritingKey[ownId]);
-	SetEvent(hEventKeyPressed);
+	ReleaseMutex(hMutexWritingKey[ownId]); 
+	SetEvent(hEventKeyPressed[ownId]); // Mete evento a TRUE
 
 }
 

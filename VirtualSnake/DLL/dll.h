@@ -47,7 +47,9 @@ extern "C"
 	 
 	extern DLL_IMP_API HANDLE hEventNewClient;
 	extern DLL_IMP_API HANDLE hEventKeyPressed[MAX_PLAYERS];
-	//extern DLL_IMP_API HANDLE hMutexWritingKey[MAX_PLAYERS];
+	extern DLL_IMP_API HANDLE hMutexWritingKey[MAX_PLAYERS];
+	extern DLL_IMP_API TCHAR(*ptrKeysInMemory)[MAX_PLAYERS]; //TODO: demasiado externs? talvez tentar eliminar isto?!?!
+	extern DLL_IMP_API HANDLE hEventGameStarted;
 
 	DLL_IMP_API void initArrayOfKeys();
 	DLL_IMP_API void writeMapInMemory(TCHAR ** map);

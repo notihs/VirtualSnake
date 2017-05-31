@@ -107,6 +107,11 @@ void localGame() {
 
 	} while (_totupper(res)!='S');
 
+	//TODO: nao pode logo vir para aqui! aguardar que o server de permissao para comecar o jogo!
+	tcout << endl << endl << TEXT("Aguarde pelo inicio do jogo!");
+
+	WaitForSingleObject(hEventGameStarted, INFINITE);
+	
 
 	while (1) {
 		readMapInMemory(); //DLL
@@ -114,7 +119,7 @@ void localGame() {
 		tcout << endl << TEXT("Movimento:");
 						   //TCHAR key = _gettchar();
 
-		TCHAR key = _getch(); //TODO: define which key is up, down, right and left (switch??)
+		TCHAR key = _getch(); 
 		TCHAR aux;
 
 		if (key == up) {

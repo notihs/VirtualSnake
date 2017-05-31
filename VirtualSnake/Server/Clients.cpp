@@ -1,4 +1,4 @@
-#include "Clients.h" //TODO: este .h acede ao dll.h . Nao e muito correto! corrigir
+#include "Clients.h" //TODO: este .h acede ao dll.h . Nao e muito correto! corrigir se possivel
 
 //TODO: melhorar a maneira como o server vai receber as keys e tratar o que acontece + sincronizacao!
 HANDLE pipeAux[MAX_PLAYERS];
@@ -6,23 +6,42 @@ TCHAR buffer[256];
 
 DWORD WINAPI WaitForLocalClients(LPVOID param) {
 
-	int bufferKeyPosition = 0; //TODO: melhorar a forma de obter qual o sitio dedicado a tecla de cada utilizador
+	Game* game = (Game *)param;
 
+	int bufferKeyPosition = 0; //TODO: melhorar a forma de obter qual o sitio dedicado a tecla de cada utilizador
+	
+	//TODO: deixar de aceitar clientes apos o jogo ter comecado!
 	while (1) {
 		WaitForSingleObject(hEventNewClient, INFINITE);
-		CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)readKeyPressedByClient, (LPVOID) bufferKeyPosition, 0, NULL);
+		
+		//CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)readKeyPressedByLocalClient, (LPVOID) bufferKeyPosition, 0, NULL);
+		CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)readKeyPressedByLocalClient, (LPVOID)bufferKeyPosition, 0, NULL); 
 		ResetEvent(hEventNewClient);
 		bufferKeyPosition++;
+		game->activePlayers = bufferKeyPosition;
 	}
 }
 
-DWORD WINAPI readKeyPressedByClient(LPVOID param) {
+//TODO: mexer o mapa, guardar as alteracoes no game.map e sincronizar tudo (Falta um mutex?? para o readMap)
+DWORD WINAPI readKeyPressedByLocalClient(LPVOID param) {
+	
+	//Game* game = (Game *)param;
 	int pos = (int)param;
 
-	//WaitForSingleObject(hEventKeyPressed[pos], INFINITE);
-	//WaitForSingleObject(hMutexWritingKey[pos], INFINITE);
+	while (1) {
+		WaitForSingleObject(hEventKeyPressed[pos], INFINITE);
+		WaitForSingleObject(hMutexWritingKey[pos], INFINITE);
 
-	//TODO: mexer o mapa
+		TCHAR tecla = (*ptrKeysInMemory)[pos];
+
+		tcout << TEXT("\ntecla recebida: ") << tecla;
+
+		//TODO: alterar o mapa aqui!
+
+		ReleaseMutex(hMutexWritingKey[pos]);
+		ResetEvent(hEventKeyPressed[pos]);
+	}
+	
 
 	return NULL;
 }
