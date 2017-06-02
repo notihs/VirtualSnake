@@ -1,7 +1,7 @@
 #pragma once
 #include "..\DLL\CommonConstants.h"
 #include "Includes.h"
-//#include "Snake.h"
+#include "Snake.h"
 #include "Map.h"
 #include "..\DLL\dll.h"
 
@@ -9,17 +9,17 @@
 	int size;
 	int id;
 	float speed;
-	int headPositionX;
-	int headPositionY;
-	int tailPositionX;
-	int tailPositionY;
+	int headPositionRow;
+	int headPositionColumn;
+	int tailPositionRow;
+	int tailPositionColumn;
 	bool alive;
 }Snake;*/
 
 typedef struct Game {
 	TCHAR ** map;
 	//Snake snake[MAX_PLAYERS];
-	Snake * snake;
+	Snake ** snake;
 	int activePlayers;
 	bool hasStarted;
 }Game;
@@ -27,8 +27,10 @@ typedef struct Game {
 
 
 Snake initOneSnake(int); //deprecated
-void showSnakeInfo(Game *game);
-void initSnakes(Snake *snake, int activePlayers);
-void initGame(Game *game); 
-void startGame(Game *game);
-void tryToMoveSnake(Game * game, int player, TCHAR keyPressed);
+void showSnakeInfo();
+void initSnakes(Snake **snake, int activePlayers); //deprecated
+void initSnakes();
+void initGame(); 
+void startGame();
+void tryToMoveSnake(int player, TCHAR keyPressed);
+Game * getCurrentGame();

@@ -5,8 +5,8 @@
 //	Snake snake;
 //
 //	snake.alive = true;
-//	snake.headPositionX = -1;
-//	snake.headPositionY = -1;
+//	snake.headPositionRow = -1;
+//	snake.headPositionColumn = -1;
 //	snake.id = id;
 //	snake.size = SNAKE_INITIAL_SIZE;
 //	snake.speed = SNAKE_BASE_SPEED;

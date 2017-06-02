@@ -29,8 +29,8 @@ int _tmain(int argc, TCHAR *argv[]) {
 	TCHAR user[BUFFER];
 	bool stayHere;
 
-	_tprintf(TEXT("Bem-vindo ao Virtual Snake! Escolha o seu username! \n->"));
-	_fgetts(user, BUFFER, stdin); //NOTA: username vai com \n no fim
+	//_tprintf(TEXT("Bem-vindo ao Virtual Snake! Escolha o seu username! \n->"));
+	//_fgetts(user, BUFFER, stdin); //NOTA: username vai com \n no fim
 
 	do {
 		stayHere = false;

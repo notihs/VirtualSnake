@@ -23,10 +23,12 @@ int _tmain(int argc, TCHAR *argv[]) {
 #endif
 
 	TCHAR tecla[256];
-	Game *game = (Game *)malloc(sizeof(Game));
+	Game *copyOfGame = (Game *)malloc(sizeof(Game));
 
-	initGame(game);
-	
+	//Game initialization
+
+	initGame();
+	copyOfGame = getCurrentGame();
 	//Local clients Configuration
 
 	initMemory();
@@ -35,7 +37,7 @@ int _tmain(int argc, TCHAR *argv[]) {
 	
 	
 	//CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)WaitForLocalClients, (LPVOID)hEventNewClient, 0, NULL); //Clients.cpp
-	CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)WaitForLocalClients, (LPVOID)game, 0, NULL);
+	CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)WaitForLocalClients, (LPVOID)copyOfGame, 0, NULL); //TODO: isto tem a copia do jogo! atencao!
 
 
 
@@ -46,8 +48,17 @@ int _tmain(int argc, TCHAR *argv[]) {
 	_tprintf(TEXT("[SERVER] Servidor lancado! Pressione uma tecla para comecar o jogo!"));
 	_fgetts(tecla, 256, stdin);
 	
-	startGame(game);
-	writeMapInMemory(game->map); //DLL
+	startGame();
+	copyOfGame = getCurrentGame();
+
+
+	tcout << endl << endl;
+	showSnakeInfo();
+	tcout << endl << endl;
+	showSnakeInfo();
+	tcout << endl << endl;
+
+	writeMapInMemory(copyOfGame->map); //DLL
 	SetEvent(hEventGameStarted); //TODO: Sera evento a anunciar a TODOS os utilizadores que ja comecou??
 
 	while (1) {

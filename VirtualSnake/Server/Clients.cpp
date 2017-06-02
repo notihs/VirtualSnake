@@ -15,7 +15,7 @@ DWORD WINAPI WaitForLocalClients(LPVOID param) {
 		WaitForSingleObject(hEventNewClient, INFINITE);
 		
 		//CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)readKeyPressedByLocalClient, (LPVOID) bufferKeyPosition, 0, NULL);
-		CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)readKeyPressedByLocalClient, (LPVOID)bufferKeyPosition, 0, NULL); 
+		CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)readKeyPressedByLocalClient, (LPVOID)game->snake[bufferKeyPosition], 0, NULL);
 		ResetEvent(hEventNewClient);
 		bufferKeyPosition++;
 		game->activePlayers = bufferKeyPosition;
@@ -26,20 +26,22 @@ DWORD WINAPI WaitForLocalClients(LPVOID param) {
 DWORD WINAPI readKeyPressedByLocalClient(LPVOID param) {
 	
 	//Game* game = (Game *)param;
-	int pos = (int)param;
+	//int pos = (int)param;
+	Snake * snake = (Snake *)param;
 
 	while (1) {
-		WaitForSingleObject(hEventKeyPressed[pos], INFINITE);
-		WaitForSingleObject(hMutexWritingKey[pos], INFINITE);
+		WaitForSingleObject(hEventKeyPressed[snake->id], INFINITE);
+		WaitForSingleObject(hMutexWritingKey[snake->id], INFINITE);
 
-		TCHAR tecla = (*ptrKeysInMemory)[pos];
+		TCHAR tecla = (*ptrKeysInMemory)[snake->id];
 
 		tcout << TEXT("\ntecla recebida: ") << tecla;
 
 		//TODO: alterar o mapa aqui!
+		tryToMoveSnake(snake->id, tecla);
 
-		ReleaseMutex(hMutexWritingKey[pos]);
-		ResetEvent(hEventKeyPressed[pos]);
+		ReleaseMutex(hMutexWritingKey[snake->id]);
+		ResetEvent(hEventKeyPressed[snake->id]);
 	}
 	
 
