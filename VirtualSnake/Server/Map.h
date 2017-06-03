@@ -20,5 +20,5 @@ using namespace std;
 
 TCHAR ** createMap();
 void showMap(TCHAR **);
-void generateItems(TCHAR **);
+void generateItems(TCHAR **, int);
 void generateSnakes(TCHAR **, int, Snake**);

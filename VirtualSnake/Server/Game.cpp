@@ -87,14 +87,16 @@ void tryToMoveSnake(int player, TCHAR keyPressed) {
 		if (game->map[headPosRow -1][headPosColumn] == FLOOR) {
 			tcout << TEXT("TUDO OK! Jogador ") << player;
 
+			//TODO: fix tail position
+			/*
 			game->map[headPosRow - 1][headPosColumn] = SNAKE_HEAD;
 			game->map[headPosRow][headPosColumn] = (char)(SNAKE_BODY + game->snake[player]->id);
 			game->map[game->snake[player]->tailPositionRow][game->snake[player]->tailPositionColumn] = FLOOR;
 
 			game->snake[player]->headPositionRow = headPosRow - 1;
 			game->snake[player]->headPositionColumn = headPosColumn;
-			//game->snake[player]->tailPositionRow = ; //TODO: fix tail position
-			//game->snake[player]->tailPositionColumn = ;
+			//game->snake[player]->tailPositionRow = ; 
+			//game->snake[player]->tailPositionColumn = ;*/
 		}
 	}
 	else if (keyPressed == 'd') {

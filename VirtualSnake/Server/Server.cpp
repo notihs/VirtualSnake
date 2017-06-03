@@ -28,7 +28,12 @@ int _tmain(int argc, TCHAR *argv[]) {
 	//Game initialization
 
 	initGame();
-	copyOfGame = getCurrentGame();
+
+	copyOfGame = getCurrentGame(); //TODO: neste momento esta a usar o getCurrentGame. Para usar uma copia, usar o metodo createCopyOfGame()
+	//createCopyOfGame();
+
+
+
 	//Local clients Configuration
 
 	initMemory();
@@ -70,4 +75,42 @@ int _tmain(int argc, TCHAR *argv[]) {
 	destroyMap();
 }
 
+
+void createCopyOfGame(Game * copyOfGame) {
+
+	//SO esta a criar o mapa, ainda
+
+	copyOfGame->map = (TCHAR **)malloc(MAP_ROWS * sizeof(TCHAR *));
+	for (int i = 0; i < MAP_ROWS; i++) {
+
+		copyOfGame->map[i] = (TCHAR *)malloc(MAP_COLUMNS * sizeof(TCHAR));
+
+		for (int j = 0; j < MAP_COLUMNS; j++) {
+
+			copyOfGame->map[i][j] = getCurrentGame()->map[i][j];
+
+		}
+	}
+
+	tcout << TEXT("Copy of game!") << endl << endl;
+
+	showMap(copyOfGame->map);
+
+	tcout << TEXT("Current Game!") << endl << endl;
+
+	showMap(getCurrentGame()->map);
+
+	tcout << TEXT("Mudanca!") << endl << endl;
+
+	copyOfGame->map[1][1] = '+';
+
+	tcout << TEXT("Copy of game!") << endl << endl;
+
+	showMap(copyOfGame->map);
+
+	tcout << TEXT("Current Game!") << endl << endl;
+
+	showMap(getCurrentGame()->map);
+
+}
 

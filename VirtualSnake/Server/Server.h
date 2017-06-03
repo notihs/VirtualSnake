@@ -13,4 +13,5 @@
 //#define BUFFER_MAPPING 100
 //#define BUFFER_MAPPING (MAP_ROWS*MAP_COLUMNS)
 
+void createCopyOfGame(Game * copyOfGame);
 

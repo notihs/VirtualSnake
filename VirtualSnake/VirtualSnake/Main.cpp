@@ -32,6 +32,15 @@ int _tmain(int argc, TCHAR *argv[]) {
 	//_tprintf(TEXT("Bem-vindo ao Virtual Snake! Escolha o seu username! \n->"));
 	//_fgetts(user, BUFFER, stdin); //NOTA: username vai com \n no fim
 
+	initSynchHandles();
+
+	if (!WaitForSingleObject(hEventGameStarted, WAIT_TIMEOUT)) {
+		tcout << TEXT("Já existe um jogo a decorrer! A aplicação vai fechar");
+		tcout << TEXT("\n\nPressione uma tecla para continuar");
+		_fgetts(user, BUFFER, stdin);
+		return 0;
+	}
+
 	do {
 		stayHere = false;
 
@@ -76,7 +85,7 @@ void localGame() {
 	TCHAR res;
 
 	initMemory();
-	initSynchHandles();
+	
 	//tcout << TEXT("Posicao livre: ") << getOwnKeyArrayPosition();
 
 	if(getOwnKeyArrayPosition() == -1){

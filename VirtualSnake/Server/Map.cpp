@@ -2,7 +2,7 @@
 
 enum effects {food, ice, grenade, vodka, oil, glue, o_vodka, o_oil, o_glue, numberOfElements}; //numberOfElements always the last one, to get the count!
 
-int numberOfObjects = (MAP_ROWS + MAP_COLUMNS)/4;
+//int numberOfObjects = (MAP_ROWS + MAP_COLUMNS)/4; //TODO: number of objects should not be fixed!
 
 void showMap(TCHAR **map) {
 
@@ -100,18 +100,18 @@ TCHAR ** createMap() {
 
 	//generateSnakes(map);
 
-	generateItems(map);
+	generateItems(map, 0); //Init a 0 porque nao ha objetos em campo ainda! Mais tarde e chamado com o numero de objetos -1
 
 	//showMap(map);
 
 	return map;
 }
 
-void generateItems(TCHAR **map) {
+void generateItems(TCHAR **map, int counterOfObjects) {
 
 	//enum effects nElements = numberOfElements; //Contains the number of elements 
 
-	int counterOfObjects = 0;
+	//int counterOfObjects = 0;
 	int x, y;
 
 	do {
@@ -183,7 +183,7 @@ void generateItems(TCHAR **map) {
 
 		counterOfObjects++;
 
-	} while (counterOfObjects < numberOfObjects);
+	} while (counterOfObjects < NUMBER_MAX_OF_OBJECTS); //TODO: this is the max of objects, for now.. change this to be dynamic!
 }
 
 //TODO: Replace items erased!
