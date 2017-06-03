@@ -54,7 +54,7 @@ void generateSnakes(TCHAR **map, int nSnakes, Snake ** snake) {
 							snake[countSnake]->tailPositionRow = auxRow;
 							snake[countSnake]->tailPositionColumn = i;
 						}
-						map[auxRow][i] = (char) (49 + countSnake); //'auxColumn'; //Corpo  da cobra //TODO: mudar o corpo da cobra para um id? talvez? 
+						map[auxRow][i] = (char) (SNAKE_BODY + countSnake); //'auxColumn'; //Corpo  da cobra //TODO: mudar o corpo da cobra para um id? talvez? 
 					}
 
 					map[auxRow][auxColumn] = SNAKE_HEAD; //Cabeca da cobra

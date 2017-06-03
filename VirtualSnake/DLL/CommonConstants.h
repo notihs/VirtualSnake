@@ -19,6 +19,7 @@
 #define O_OIL TEXT('P')
 #define O_GLUE TEXT('H')
 #define SNAKE_HEAD TEXT('~')
+#define SNAKE_BODY 49
 
 //SNAKE
 #define SNAKE_INITIAL_SIZE 3

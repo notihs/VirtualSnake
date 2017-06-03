@@ -90,12 +90,18 @@ void localGame() {
 		tcout << TEXT("Escolha as teclas para se movimentar: ");
 		tcout << TEXT("\n\nTecla para cima: ");
 		up = _getch();
-		tcout << TEXT("\nTecla para baixo: ");
-		down = _getch();
-		tcout << TEXT("\nTecla para esquerda: ");
-		left = _getch();
-		tcout << TEXT("\nTecla para direita: ");
-		right = _getch();
+		do {
+			tcout << TEXT("\nTecla para baixo: ");
+			down = _getch();
+		} while (down == up);
+		do {
+			tcout << TEXT("\nTecla para esquerda: ");
+			left = _getch();
+		} while (left == down || left == up);
+		do{
+			tcout << TEXT("\nTecla para direita: ");
+			right = _getch();
+		} while (right == down || right == up || right == left);
 
 		tcout << TEXT("\n\nTeclas escolhidas: ");
 		tcout << endl << TEXT("Cima: ") << up;
