@@ -36,10 +36,18 @@ void initSnakes() {
 		game->snake[i]->speed = SNAKE_BASE_SPEED;
 
 		//Valores invalidos!!!! Passam a validos apos startGame
+		game->snake[i]->bodyRow = (int *)malloc(SNAKE_INITIAL_SIZE * sizeof(int));
+		game->snake[i]->bodyColumn = (int *)malloc(SNAKE_INITIAL_SIZE * sizeof(int));
+
+		for (int j = 0; j < SNAKE_INITIAL_SIZE; j++) {
+			game->snake[i]->bodyRow[j] = -1;
+			game->snake[i]->bodyColumn[j] = -1;
+		}
+		/*
 		game->snake[i]->tailPositionRow = -1;
 		game->snake[i]->tailPositionColumn = -1;
 		game->snake[i]->headPositionRow = -1;
-		game->snake[i]->headPositionColumn = -1;
+		game->snake[i]->headPositionColumn = -1;*/
 	}
 
 }
@@ -52,10 +60,16 @@ void showSnakeInfo() {
 		tcout << TEXT("ALIVE ->") << game->snake[i]->alive << endl;
 		tcout << TEXT("SIZE ->") << game->snake[i]->size << endl;
 		tcout << TEXT("SPEED ->") << game->snake[i]->speed << endl;
-		tcout << TEXT("HEAD POSITION X ->") << game->snake[i]->headPositionRow << endl;
+		/*tcout << TEXT("HEAD POSITION X ->") << game->snake[i]->headPositionRow << endl;
 		tcout << TEXT("HEAD POSITION Y ->") << game->snake[i]->headPositionColumn << endl;
 		tcout << TEXT("TAIL POSITION X ->") << game->snake[i]->tailPositionRow << endl;
-		tcout << TEXT("TAIL POSITION Y ->") << game->snake[i]->tailPositionColumn << endl;
+		tcout << TEXT("TAIL POSITION Y ->") << game->snake[i]->tailPositionColumn << endl;*/
+		tcout << TEXT("BODY POSITIONS: ") << endl;
+
+		for (int j = 0; j < game->snake[j]->size; j++) {
+			tcout << TEXT("ROW ") << j << TEXT(" ->") << game->snake[i]->bodyRow[j] << endl;
+			tcout << TEXT("COLUMN ") << j << TEXT(" ->") << game->snake[i]->bodyColumn[j] << endl;
+		}
 
 	}
 
@@ -77,42 +91,66 @@ void startGame() {
 
 void tryToMoveSnake(int player, TCHAR keyPressed) {
 	
-	int headPosColumn = game->snake[player]->headPositionColumn;
-	int headPosRow = game->snake[player]->headPositionRow;
-
-	//showMap(game->map);
+	int snakeSize = game->snake[player]->size;
+	int headPosColumn = game->snake[player]->bodyColumn[snakeSize-1];
+	int headPosRow = game->snake[player]->bodyRow[snakeSize-1];
 
 	if (keyPressed == 'u') {
-		
 		if (game->map[headPosRow -1][headPosColumn] == FLOOR) {
-			tcout << TEXT("TUDO OK! Jogador ") << player;
+			//tcout << TEXT("TUDO OK! Jogador ") << player;
 
-			//TODO: fix tail position
-			/*
-			game->map[headPosRow - 1][headPosColumn] = SNAKE_HEAD;
-			game->map[headPosRow][headPosColumn] = (char)(SNAKE_BODY + game->snake[player]->id);
-			game->map[game->snake[player]->tailPositionRow][game->snake[player]->tailPositionColumn] = FLOOR;
+			standardMovement(player, -1, 0);
 
-			game->snake[player]->headPositionRow = headPosRow - 1;
-			game->snake[player]->headPositionColumn = headPosColumn;
-			//game->snake[player]->tailPositionRow = ; 
-			//game->snake[player]->tailPositionColumn = ;*/
 		}
 	}
 	else if (keyPressed == 'd') {
 		if (game->map[headPosRow + 1][headPosColumn] == FLOOR) {
-			tcout << TEXT("TUDO OK! Jogador ") << player;
+			//tcout << TEXT("TUDO OK! Jogador ") << player;
+
+			standardMovement(player, 1, 0);
 		}
 	}
 	else if (keyPressed == 'l') {
 		if (game->map[headPosRow][headPosColumn -1] == FLOOR) {
-			tcout << TEXT("TUDO OK! Jogador ") << player;
+			//tcout << TEXT("TUDO OK! Jogador ") << player;
+
+			standardMovement(player, 0, -1);
+	
 		}
 	}
 	else if (keyPressed == 'r') {
 		if (game->map[headPosRow][headPosColumn + 1] == FLOOR) {
-			tcout << TEXT("TUDO OK! Jogador ") << player;
+			//tcout << TEXT("TUDO OK! Jogador ") << player;
+			standardMovement(player, 0, 1);
+	
 		}
 	}
 
+	showSnakeInfo();
+	showMap(game->map);
+	writeMapInMemory(game->map);
+}
+
+void standardMovement(int player, int rowMovement, int columnMovement) {
+
+	int snakeSize = game->snake[player]->size;
+	int tailPosColumn = game->snake[player]->bodyColumn[0];
+	int tailPosRow = game->snake[player]->bodyRow[0];
+	int headPosColumn = game->snake[player]->bodyColumn[snakeSize - 1];
+	int headPosRow = game->snake[player]->bodyRow[snakeSize - 1];
+
+	//DESENHO DO MAPA
+	game->map[headPosRow + rowMovement][headPosColumn + columnMovement] = SNAKE_HEAD;
+	game->map[headPosRow][headPosColumn] = (char)(SNAKE_BODY + game->snake[player]->id);
+	game->map[tailPosRow][tailPosColumn] = FLOOR;
+
+	//LOGICA DA COBRA 
+	for (int i = 0; i < snakeSize - 1; i++) {
+		game->snake[player]->bodyRow[i] = game->snake[player]->bodyRow[i + 1];
+		game->snake[player]->bodyColumn[i] = game->snake[player]->bodyColumn[i + 1];
+	}
+
+	game->snake[player]->bodyRow[snakeSize - 1] = headPosRow + rowMovement;
+	game->snake[player]->bodyColumn[snakeSize - 1] = headPosColumn + columnMovement;
+	
 }

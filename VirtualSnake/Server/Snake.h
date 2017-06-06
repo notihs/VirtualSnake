@@ -6,9 +6,12 @@ typedef struct Snake {
 	int size;
 	int id;
 	float speed;
-	int headPositionRow;
+
+	int *bodyRow;		
+	int *bodyColumn;    //1st position -> tail, size position -> head
+	/*int headPositionRow;
 	int headPositionColumn;
 	int tailPositionRow;
-	int tailPositionColumn;
+	int tailPositionColumn;*/
 	bool alive;
 }Snake;

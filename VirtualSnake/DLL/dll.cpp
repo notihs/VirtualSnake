@@ -20,6 +20,9 @@ HANDLE hEventNewClient;
 TCHAR eventGameStartedName[TAM] = TEXT("Event game started");
 HANDLE hEventGameStarted;
 
+TCHAR eventMapChangesName[TAM] = TEXT("Event map changes"); //TODO: deve ser um semaforo aqui! um evento nao funciona muito bem, acho..
+HANDLE hEventMapChanges[MAX_PLAYERS];
+
 //MUTEX
 TCHAR mutexWritingKeyName[TAM];
 HANDLE hMutexWritingKey[MAX_PLAYERS];
@@ -45,16 +48,13 @@ void initSynchHandles() {
 	for (int i = 0; i < MAX_PLAYERS; i++) {
 		_stprintf_s(eventKeyPressedName, TAM, TEXT("Key Pressed Event %d"), i);
 		_stprintf_s(mutexWritingKeyName, TAM, TEXT("Key Writing Mutex %d"), i);
-		//_stprintf_s(readEventName, 100, TEXT("Read Event %d"), i);
-		//sprintf_s(name, 100,"Write Event %d", i);
 
 		hEventKeyPressed[i] = CreateEvent(NULL, TRUE, FALSE, eventKeyPressedName);
+		hEventMapChanges[i] = CreateEvent(NULL, TRUE, FALSE, eventMapChangesName);
 		
 		hMutexWritingKey[i] = CreateMutex(NULL, FALSE, mutexWritingKeyName);
-		//canReadEvent[i] = CreateEvent(NULL, TRUE, TRUE, readEventName);
-
-		//|| canReadEvent[i] == NULL) {
-		if (hEventKeyPressed[i] == NULL){
+		
+		if (hEventKeyPressed[i] == NULL || hEventMapChanges[i] == NULL){
 			_tprintf(TEXT("[Erro]Criação de eventos(%d)\n"), GetLastError());
 			return;
 		}
@@ -63,8 +63,6 @@ void initSynchHandles() {
 			return;
 		}
 
-		//_tprintf(eventKeyPressedName);
-		//printf(name);
 	}
 
 	hEventGameStarted = CreateEvent(NULL, TRUE, FALSE, eventGameStartedName);
@@ -166,12 +164,16 @@ void writeMapInMemory(TCHAR ** map) {
 		tcout << endl;
 	}
 
+	for (int i = 0; i < MAX_PLAYERS;i++) {
+		SetEvent(hEventMapChanges[i]);
+	}
+	
 	return;
 }
 
 TCHAR** readMapInMemory() {
 
-	TCHAR ** map;
+	TCHAR ** map; //TODO: isto so e reservado 1 vez no jogo todo! nao e em cada read!
 
 	map = (TCHAR **)malloc(MAP_ROWS * sizeof(TCHAR *));
 
@@ -179,6 +181,7 @@ TCHAR** readMapInMemory() {
 		map[i] = (TCHAR *)malloc(MAP_COLUMNS * sizeof(TCHAR));
 	}
 
+	WaitForSingleObject(hEventMapChanges[ownId], INFINITE);
 	for (int i = 0; i < MAP_ROWS; i++) {
 		for (int j = 0; j < MAP_COLUMNS; j++) {
 			map[i][j] = (*ptrMapInMemory)[i][j];
@@ -187,6 +190,7 @@ TCHAR** readMapInMemory() {
 		tcout << endl;
 	}
 
+	ResetEvent(hEventMapChanges[ownId]);
 	return map;
 }
 

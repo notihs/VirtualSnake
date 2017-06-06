@@ -127,9 +127,12 @@ void localGame() {
 
 	WaitForSingleObject(hEventGameStarted, INFINITE);
 	
+	CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)WaitForMapChanges, NULL, 0, NULL);
+
+	//readMapInMemory(); //DLL
 
 	while (1) {
-		readMapInMemory(); //DLL
+		
 
 		tcout << endl << TEXT("Movimento:");
 						   //TCHAR key = _gettchar();
@@ -154,6 +157,10 @@ void localGame() {
 		}
 
 		newKeyPressed(aux);
+
+		
+
+		//readMapInMemory(); //TODO: este read tem que estar numa thread!
 	}
 }
 
@@ -206,4 +213,15 @@ void remoteGame() {
 		//TODO: fazer algo apos a conexao ser efetuada com sucesso
 	
 	}
+}
+
+DWORD WINAPI WaitForMapChanges(LPVOID param) {
+
+	while (1) {
+		readMapInMemory();
+	}
+
+	return NULL;
+	
+
 }

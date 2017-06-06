@@ -34,3 +34,4 @@ void initGame();
 void startGame();
 void tryToMoveSnake(int player, TCHAR keyPressed);
 Game * getCurrentGame();
+void standardMovement(int, int, int);

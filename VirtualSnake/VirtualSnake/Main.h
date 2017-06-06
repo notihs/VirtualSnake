@@ -14,3 +14,4 @@
 //void mapInMemory();
 void remoteGame();
 void localGame();
+DWORD WINAPI WaitForMapChanges(LPVOID param);

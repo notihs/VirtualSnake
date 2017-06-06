@@ -17,8 +17,9 @@ void showMap(TCHAR **map) {
 
 void generateSnakes(TCHAR **map, int nSnakes, Snake ** snake) {
 
+	int bodyCounter;
 	int countSnake = 0;
-	int auxColumn, auxRow;
+	int rndColumn, rndRow;
 	int offset = SNAKE_INITIAL_SIZE - 1;
 	int freeCells;
 
@@ -31,37 +32,50 @@ void generateSnakes(TCHAR **map, int nSnakes, Snake ** snake) {
 
 		freeCells = 0;
 
-		auxRow = (rand() % (MAP_ROWS - 2)) + 1;
-		auxColumn = (rand() % (MAP_COLUMNS - 2)) + 1;
+		rndRow = (rand() % (MAP_ROWS - 2)) + 1;
+		rndColumn = (rand() % (MAP_COLUMNS - 2)) + 1;
 
 		//tcout << TEXT("entrei no DO!");
 
-			if (auxColumn-offset > 0)
+			if (rndColumn-offset > 0)
 			{
-				//tcout << TEXT("a verificar se a posicao auxColumn:") << auxColumn - offset << " auxRow:" << auxRow << " e valida" << endl;
+				//tcout << TEXT("a verificar se a posicao rndColumn:") << rndColumn - offset << " rndRow:" << rndRow << " e valida" << endl;
 
-				for (int i = auxColumn-offset; i <= auxColumn; i++) {
-					if (map[auxRow][i] == FLOOR) {
+				for (int i = rndColumn-offset; i <= rndColumn; i++) {
+					if (map[rndRow][i] == FLOOR) {
 						//tcout << TEXT("Free CELL!");
 						freeCells++;
 					}
 				}
 				if (freeCells == SNAKE_INITIAL_SIZE) {
-					for (int i = auxColumn - offset; i < auxColumn; i++) {
 
-						if (i == auxColumn - offset) {
+					bodyCounter = 0;
+
+					for (int i = rndColumn - offset; i < rndColumn; i++) {
+
+						/*if (i == rndColumn - offset) {
 							
-							snake[countSnake]->tailPositionRow = auxRow;
+							snake[countSnake]->tailPositionRow = rndRow;
 							snake[countSnake]->tailPositionColumn = i;
-						}
-						map[auxRow][i] = (char) (SNAKE_BODY + countSnake); //'auxColumn'; //Corpo  da cobra //TODO: mudar o corpo da cobra para um id? talvez? 
+						}*/
+						
+
+						snake[countSnake]->bodyRow[bodyCounter] = rndRow;
+						snake[countSnake]->bodyColumn[bodyCounter] = i;
+						bodyCounter++;
+
+						map[rndRow][i] = (char) (SNAKE_BODY + countSnake); //'rndColumn'; //Corpo  da cobra //TODO: mudar o corpo da cobra para um id? talvez? 
+						
 					}
 
-					map[auxRow][auxColumn] = SNAKE_HEAD; //Cabeca da cobra
+					snake[countSnake]->bodyRow[bodyCounter] = rndRow;
+					snake[countSnake]->bodyColumn[bodyCounter] = rndColumn;
+
+					map[rndRow][rndColumn] = SNAKE_HEAD; //Cabeca da cobra
 					
-					snake[countSnake]->headPositionRow = auxRow;
-					snake[countSnake]->headPositionColumn = auxColumn;
-					tcout << TEXT("Cabeca da cobra x:" << auxColumn << " y:" << auxRow << endl);
+					//snake[countSnake]->headPositionRow = rndRow;
+					//snake[countSnake]->headPositionColumn = rndColumn;
+					tcout << TEXT("Cabeca da cobra x:" << rndColumn << " y:" << rndRow << endl);
 					countSnake++;
 				}
 				else {
@@ -120,54 +134,54 @@ void generateItems(TCHAR **map, int counterOfObjects) {
 		x = (rand() % (MAP_ROWS - 2)) + 1;
 		y = (rand() % (MAP_COLUMNS - 2)) + 1;
 
-		//tcout << TEXT("trying with ") << auxColumn << TEXT(",") << auxRow << endl;
+		//tcout << TEXT("trying with ") << rndColumn << TEXT(",") << rndRow << endl;
 
 		if (map[x][y] == FLOOR) {
 
 			switch (rand() % numberOfElements)
 			{
 			case food:
-				/*tcout << auxColumn << TEXT(",") << auxRow << TEXT(" food");
+				/*tcout << rndColumn << TEXT(",") << rndRow << TEXT(" food");
 				tcout << endl;*/
 				map[x][y] = FOOD;
 				break;
 			case ice:
-				/*tcout << auxColumn << TEXT(",") << auxRow << TEXT(" ice");
+				/*tcout << rndColumn << TEXT(",") << rndRow << TEXT(" ice");
 				tcout << endl;*/
 				map[x][y] = ICE;
 				break;
 			case grenade:
-				/*tcout << auxColumn << TEXT(",") << auxRow << TEXT(" grenade");
+				/*tcout << rndColumn << TEXT(",") << rndRow << TEXT(" grenade");
 				tcout << endl;*/
 				map[x][y] = GRENADE;
 				break;
 			case vodka:
-				/*tcout << auxColumn << TEXT(",") << auxRow << TEXT(" vodka");
+				/*tcout << rndColumn << TEXT(",") << rndRow << TEXT(" vodka");
 				tcout << endl;*/
 				map[x][y] = VODKA;
 				break;
 			case oil:
-				/*tcout << auxColumn << TEXT(",") << auxRow << TEXT(" oil");
+				/*tcout << rndColumn << TEXT(",") << rndRow << TEXT(" oil");
 				tcout << endl;*/
 				map[x][y] = OIL;
 				break;
 			case glue:
-				/*tcout << auxColumn << TEXT(",") << auxRow << TEXT(" glue");
+				/*tcout << rndColumn << TEXT(",") << rndRow << TEXT(" glue");
 				tcout << endl;*/
 				map[x][y] = GLUE;
 				break;
 			case o_vodka:
-				/*tcout << auxColumn << TEXT(",") << auxRow << TEXT(" o_vodka");
+				/*tcout << rndColumn << TEXT(",") << rndRow << TEXT(" o_vodka");
 				tcout << endl;*/
 				map[x][y] = O_VODKA;
 				break;
 			case o_oil:
-				/*tcout << auxColumn << TEXT(",") << auxRow << TEXT(" o_oil");
+				/*tcout << rndColumn << TEXT(",") << rndRow << TEXT(" o_oil");
 				tcout << endl;*/
 				map[x][y] = O_OIL;
 				break;
 			case o_glue:
-				/*tcout << auxColumn << TEXT(",") << auxRow << TEXT(" o_glue");
+				/*tcout << rndColumn << TEXT(",") << rndRow << TEXT(" o_glue");
 				tcout << endl;*/
 				map[x][y] = O_GLUE;
 				break;
