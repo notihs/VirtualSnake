@@ -1,3 +1,11 @@
-﻿  Main.cpp
+﻿  Utils.cpp
+  Main.cpp
+c:\users\daniel simões\dropbox\so2 - 2016-2017\trabalho\virtualsnake\virtualsnake\main.cpp(93): warning C4101: 'up': unreferenced local variable
+c:\users\daniel simões\dropbox\so2 - 2016-2017\trabalho\virtualsnake\virtualsnake\main.cpp(93): warning C4101: 'left': unreferenced local variable
+c:\users\daniel simões\dropbox\so2 - 2016-2017\trabalho\virtualsnake\virtualsnake\main.cpp(94): warning C4101: 'res': unreferenced local variable
+c:\users\daniel simões\dropbox\so2 - 2016-2017\trabalho\virtualsnake\virtualsnake\main.cpp(93): warning C4101: 'down': unreferenced local variable
+c:\users\daniel simões\dropbox\so2 - 2016-2017\trabalho\virtualsnake\virtualsnake\main.cpp(93): warning C4101: 'right': unreferenced local variable
+  Generating Code...
+  LINK : C:\Users\Daniel Sim§es\Dropbox\SO2 - 2016-2017\Trabalho\VirtualSnake\Debug\VirtualSnake.exe not found or not built by the last incremental link; performing full link
   VirtualSnake.vcxproj -> C:\Users\Daniel Simões\Dropbox\SO2 - 2016-2017\Trabalho\VirtualSnake\Debug\VirtualSnake.exe
   VirtualSnake.vcxproj -> C:\Users\Daniel Simões\Dropbox\SO2 - 2016-2017\Trabalho\VirtualSnake\Debug\VirtualSnake.pdb (Full PDB)

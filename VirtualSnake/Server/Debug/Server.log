@@ -1,9 +1,6 @@
-﻿  Snake.cpp
-  Server.cpp
-  Map.cpp
-c:\users\daniel simões\dropbox\so2 - 2016-2017\trabalho\virtualsnake\server\map.cpp(102): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
-  Game.cpp
+﻿  Game.cpp
   Clients.cpp
+c:\users\daniel simões\dropbox\so2 - 2016-2017\trabalho\virtualsnake\server\clients.cpp(37): warning C4244: 'argument': conversion from 'float' to 'DWORD', possible loss of data
   Generating Code...
   Server.vcxproj -> C:\Users\Daniel Simões\Dropbox\SO2 - 2016-2017\Trabalho\VirtualSnake\Debug\Server.exe
   Server.vcxproj -> C:\Users\Daniel Simões\Dropbox\SO2 - 2016-2017\Trabalho\VirtualSnake\Debug\Server.pdb (Full PDB)

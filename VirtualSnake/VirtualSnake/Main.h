@@ -10,8 +10,10 @@
 #include <conio.h>
 #include "..\DLL\CommonConstants.h"
 #include "..\DLL\dll.h"
+#include "Utils.h"
 
 //void mapInMemory();
 void remoteGame();
-void localGame();
+void localGame(TCHAR **);
 DWORD WINAPI WaitForMapChanges(LPVOID param);
+TCHAR ** initMalloc();

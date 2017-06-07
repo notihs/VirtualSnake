@@ -5,6 +5,7 @@
 #include "Game.h"
 
 DWORD WINAPI WaitForLocalClients(LPVOID param);
+DWORD WINAPI moveSnakeToDirection(LPVOID param);
 DWORD WINAPI readKeyPressedByLocalClient(LPVOID param);
 DWORD WINAPI WaitForRemoteClients(LPVOID param);
 void initPipes();

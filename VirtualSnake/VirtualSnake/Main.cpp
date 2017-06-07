@@ -27,6 +27,7 @@ int _tmain(int argc, TCHAR *argv[]) {
 
 	TCHAR tecla[BUFFER];
 	TCHAR user[BUFFER];
+	TCHAR ** map; 
 	bool stayHere;
 
 	//_tprintf(TEXT("Bem-vindo ao Virtual Snake! Escolha o seu username! \n->"));
@@ -34,12 +35,21 @@ int _tmain(int argc, TCHAR *argv[]) {
 
 	initSynchHandles();
 
+	/*if (WaitForSingleObject(hEventServerIsOnline, WAIT_TIMEOUT) != WAIT_OBJECT_0) { //TODO: fix this, or ignore
+		tcout << TEXT("O servidor nao se encontra online! Tente mais tarde!");
+		tcout << TEXT("\n\nPressione uma tecla para continuar");
+		_fgetts(user, BUFFER, stdin);
+		return 0;
+	}*/
+
 	if (!WaitForSingleObject(hEventGameStarted, WAIT_TIMEOUT)) {
 		tcout << TEXT("Já existe um jogo a decorrer! A aplicação vai fechar");
 		tcout << TEXT("\n\nPressione uma tecla para continuar");
 		_fgetts(user, BUFFER, stdin);
 		return 0;
 	}
+
+	map = initMalloc();
 
 	do {
 		stayHere = false;
@@ -56,7 +66,7 @@ int _tmain(int argc, TCHAR *argv[]) {
 
 		if (!_tcscmp(tecla, TEXT("1"))) {
 			_tprintf(TEXT("Aguarde pelo Jogo Local!\n\n"));
-			localGame();			
+			localGame(map);			
 		}
 		else if (!_tcscmp(tecla, TEXT("2"))) {
 			_tprintf(TEXT("Aguarde pelo Jogo Remoto!")); 
@@ -78,8 +88,7 @@ int _tmain(int argc, TCHAR *argv[]) {
 	return 0;
 }
 
-void localGame() {
-
+void localGame(TCHAR ** map) {
 
 	TCHAR up, down, left, right;
 	TCHAR res;
@@ -94,7 +103,8 @@ void localGame() {
 		return;
 	}
 
-	//TODO: se houver tempo, por de maneira a que as arrow keys etc, funcionem. E necessairo usar as virtual key codes do windows
+	TCHAR *teclas = chooseKeys();
+	/*
 	do {
 		tcout << TEXT("Escolha as teclas para se movimentar: ");
 		tcout << TEXT("\n\nTecla para cima: ");
@@ -107,7 +117,7 @@ void localGame() {
 			tcout << TEXT("\nTecla para esquerda: ");
 			left = _getch();
 		} while (left == down || left == up);
-		do{
+		do {
 			tcout << TEXT("\nTecla para direita: ");
 			right = _getch();
 		} while (right == down || right == up || right == left);
@@ -120,23 +130,20 @@ void localGame() {
 		tcout << endl << endl << TEXT("Confirma estas teclas? (S/N)");
 		res = _getch();
 
-	} while (_totupper(res)!='S');
+	} while (_totupper(res) != 'S');*/
 
-	//TODO: nao pode logo vir para aqui! aguardar que o server de permissao para comecar o jogo!
 	tcout << endl << endl << TEXT("Aguarde pelo inicio do jogo!");
 
 	WaitForSingleObject(hEventGameStarted, INFINITE);
 	
-	CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)WaitForMapChanges, NULL, 0, NULL);
+	CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)WaitForMapChanges, (LPVOID)map, 0, NULL);
 
 	//readMapInMemory(); //DLL
 
 	while (1) {
-		
 
-		tcout << endl << TEXT("Movimento:");
+		/*tcout << endl << TEXT("Movimento:");
 						   //TCHAR key = _gettchar();
-
 		TCHAR key = _getch(); 
 		TCHAR aux;
 
@@ -154,9 +161,13 @@ void localGame() {
 		}
 		else {
 			continue;
-		}
+		}*/
 
-		newKeyPressed(aux);
+		TCHAR aux = keyPress(teclas);
+
+		if (aux != ' ') {
+			newKeyPressed(aux);
+		}
 
 		
 
@@ -190,7 +201,7 @@ void remoteGame() {
 			//exit(-1);
 		}
 
-		_tprintf(TEXT("[CLIENTE] Ligação ao escritor... (CreateFile)\n"));
+		_tprintf(TEXT("[CLIENTE] Ligação ao servidor... (CreateFile)\n"));
 		hPipe = CreateFile(pipeServer, GENERIC_WRITE, 0, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
 		if (hPipe == NULL) {
 			_tprintf(TEXT("[ERRO] Ligar ao pipe '%s'... (CreateFile)\n"), pipeServer);
@@ -217,11 +228,33 @@ void remoteGame() {
 
 DWORD WINAPI WaitForMapChanges(LPVOID param) {
 
+	TCHAR ** map = (TCHAR **)param;
+
 	while (1) {
-		readMapInMemory();
+		readMapInMemory(map);
 	}
 
 	return NULL;
 	
 
 }
+
+TCHAR ** initMalloc() {
+
+	TCHAR ** map = (TCHAR **)malloc(MAP_ROWS * sizeof(TCHAR *));
+	if (map == NULL) {
+		tcout << TEXT("Erro na alocacao de memoria de TCHAR** (map) !");
+		exit(0);
+	}
+
+	for (int i = 0; i < MAP_ROWS; i++) {
+		map[i] = (TCHAR *)malloc(MAP_COLUMNS * sizeof(TCHAR));
+		if (map == NULL) {
+			tcout << TEXT("Erro na alocacao de memoria de TCHAR* (map) !");
+			exit(0);
+		}
+	}
+
+	return map;
+}
+

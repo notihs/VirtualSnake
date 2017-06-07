@@ -1,44 +1,61 @@
-#include "Clients.h" //TODO: este .h acede ao dll.h . Nao e muito correto! corrigir se possivel
+#include "Clients.h" 
 
-//TODO: melhorar a maneira como o server vai receber as keys e tratar o que acontece + sincronizacao!
+
 HANDLE pipeAux[MAX_PLAYERS];
 TCHAR buffer[256];
+TCHAR keyPressed;
 
 DWORD WINAPI WaitForLocalClients(LPVOID param) {
 
 	Game* game = (Game *)param;
 
-	int bufferKeyPosition = 0; //TODO: melhorar a forma de obter qual o sitio dedicado a tecla de cada utilizador
+	int bufferKeyPosition = 0; 
 	
-	//TODO: deixar de aceitar clientes apos o jogo ter comecado!
 	while (1) {
 		WaitForSingleObject(hEventNewClient, INFINITE);
 		
-		//CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)readKeyPressedByLocalClient, (LPVOID) bufferKeyPosition, 0, NULL);
-		CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)readKeyPressedByLocalClient, (LPVOID)game->snake[bufferKeyPosition], 0, NULL);
+
+		//CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)readKeyPressedByLocalClient, (LPVOID)game->snake[bufferKeyPosition], 0, NULL);
+		CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)moveSnakeToDirection, (LPVOID)game->snake[bufferKeyPosition], 0, NULL);
 		ResetEvent(hEventNewClient);
 		bufferKeyPosition++;
 		game->activePlayers = bufferKeyPosition;
 	}
 }
 
-//TODO: mexer o mapa, guardar as alteracoes no game.map e sincronizar tudo (Falta um mutex?? para o readMap)
+DWORD WINAPI moveSnakeToDirection(LPVOID param) {
+	
+	Snake * snake = (Snake *)param;
+
+	CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)readKeyPressedByLocalClient, (LPVOID)snake, 0, NULL);
+
+	WaitForSingleObject(hEventGameStarted, INFINITE);
+
+	while (1) {
+
+		tryToMoveSnake(snake->id, snake->direction);
+		Sleep(2000/snake->speed);
+	}
+
+	return NULL;
+}
+
 DWORD WINAPI readKeyPressedByLocalClient(LPVOID param) {
 	
-	//Game* game = (Game *)param;
-	//int pos = (int)param;
 	Snake * snake = (Snake *)param;
 
 	while (1) {
 		WaitForSingleObject(hEventKeyPressed[snake->id], INFINITE);
 		WaitForSingleObject(hMutexWritingKey[snake->id], INFINITE);
 
-		TCHAR tecla = (*ptrKeysInMemory)[snake->id];
+		TCHAR key = ptrKeysInMemory[snake->id];
+		tcout << TEXT("\ntecla recebida: ") << key;
 
-		tcout << TEXT("\ntecla recebida: ") << tecla;
+		if (validMovement(snake->id, key)) {
+			snake->direction = key; //TODO: add mutex here or something
+		}
 
-		//TODO: alterar o mapa aqui!
-		tryToMoveSnake(snake->id, tecla);
+		//tryToMoveSnake(snake->id, tecla);
 
 		ReleaseMutex(hMutexWritingKey[snake->id]);
 		ResetEvent(hEventKeyPressed[snake->id]);

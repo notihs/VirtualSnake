@@ -42,19 +42,19 @@ using namespace std;
 #define tstring string
 #endif
 
-extern "C"
-{
+
 	 
 	extern DLL_IMP_API HANDLE hEventNewClient;
 	extern DLL_IMP_API HANDLE hEventKeyPressed[MAX_PLAYERS];
 	extern DLL_IMP_API HANDLE hMutexWritingKey[MAX_PLAYERS];
-	extern DLL_IMP_API TCHAR(*ptrKeysInMemory)[MAX_PLAYERS]; //TODO: demasiado externs? talvez tentar eliminar isto?!?!
+	extern DLL_IMP_API TCHAR *ptrKeysInMemory; //TODO: demasiado externs? talvez tentar eliminar isto?!?!
 	extern DLL_IMP_API HANDLE hEventGameStarted;
+	extern DLL_IMP_API HANDLE hEventServerIsOnline;
 
 	DLL_IMP_API void initArrayOfKeys();
 	DLL_IMP_API void writeMapInMemory(TCHAR ** map);
 
-	DLL_IMP_API TCHAR** readMapInMemory();
+	DLL_IMP_API void readMapInMemory(TCHAR **);
 	DLL_IMP_API int getOwnKeyArrayPosition();
 	DLL_IMP_API void newKeyPressed(TCHAR tecla);
 
@@ -64,4 +64,3 @@ extern "C"
 	DLL_IMP_API void readKeys();
 	DLL_IMP_API void initMemory();
 
-}

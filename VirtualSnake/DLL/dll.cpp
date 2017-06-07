@@ -20,8 +20,11 @@ HANDLE hEventNewClient;
 TCHAR eventGameStartedName[TAM] = TEXT("Event game started");
 HANDLE hEventGameStarted;
 
-TCHAR eventMapChangesName[TAM] = TEXT("Event map changes"); //TODO: deve ser um semaforo aqui! um evento nao funciona muito bem, acho..
+TCHAR eventMapChangesName[TAM] = TEXT("Event map changes"); 
 HANDLE hEventMapChanges[MAX_PLAYERS];
+
+TCHAR eventServerIsOnlineName[TAM] = TEXT("Event map changes");
+HANDLE hEventServerIsOnline;
 
 //MUTEX
 TCHAR mutexWritingKeyName[TAM];
@@ -36,7 +39,7 @@ TCHAR(*ptrMapInMemory)[MAP_ROWS][MAP_COLUMNS];
 int ownId = -1;
 HANDLE hKeysMemory;
 TCHAR *keysInMemoryName = TEXT("KeysMemory");
-TCHAR(*ptrKeysInMemory)[MAX_PLAYERS]; //LIST OF KEYS:
+TCHAR *ptrKeysInMemory; //LIST OF KEYS:
 									  //e -> empty
 									  //o -> occupied
 									  //u -> up
@@ -65,13 +68,15 @@ void initSynchHandles() {
 
 	}
 
+	hEventServerIsOnline = CreateEvent(NULL, TRUE, FALSE, eventServerIsOnlineName);
+
 	hEventGameStarted = CreateEvent(NULL, TRUE, FALSE, eventGameStartedName);
 
 	hEventNewClient = CreateEvent(NULL, TRUE, FALSE, eventNewClientName); //Evento criado a FALSE 
 																		  //Set -> mete a TRUE
 																		  //Reset -> mete a FALSE
 
-	if (hEventNewClient == NULL || hEventGameStarted == NULL) {
+	if (hEventNewClient == NULL || hEventGameStarted == NULL || hEventServerIsOnline == NULL) {
 		_tprintf(TEXT("[Erro]Criação de evento(%d)\n"), GetLastError());
 		return;
 	}
@@ -90,8 +95,8 @@ void initMemory() {
 		return;
 	}
 
-	ptrKeysInMemory = (TCHAR(*)[MAX_PLAYERS])MapViewOfFile(hKeysMemory
-		, FILE_MAP_WRITE, 0, 0, sizeof(TCHAR[MAX_PLAYERS]));
+	ptrKeysInMemory = (TCHAR(*))MapViewOfFile(hKeysMemory
+		, FILE_MAP_WRITE, 0, 0, sizeof(TCHAR) * MAX_PLAYERS);
 
 	ptrMapInMemory = (TCHAR(*)[MAP_ROWS][MAP_COLUMNS])MapViewOfFile(hMapMemory
 		, FILE_MAP_WRITE, 0, 0, sizeof(TCHAR[MAP_ROWS][MAP_COLUMNS]));
@@ -107,8 +112,9 @@ void initMemory() {
 void initArrayOfKeys() { //TODO: Em principio, nao deve haver problemas de sincronizacao
 
 	for (int i = 0; i < MAX_PLAYERS; i++) {
-		(*ptrKeysInMemory)[i] = 'e';
-		tcout << TEXT("Posicao ") << i << TEXT(": ") << (*ptrKeysInMemory)[i] << endl;
+		ptrKeysInMemory[i] = 'e';
+		//tcout << TEXT("Posicao ") << i << TEXT(": ") << ptrKeysInMemory[i] << endl;
+		//_tprintf(TEXT("Posicao %d: %c\n"), i, ptrKeysInMemory[i]);
 	}
 
 	return;
@@ -118,7 +124,7 @@ void readKeys() { //TODO: read only when event happens!
 
 	for (int i = 0; i < MAX_PLAYERS; i++) {
 		//(*ptrKeysInMemory)[i] = 'e';
-		tcout << TEXT("Posicao ") << i << TEXT(": ") << (*ptrKeysInMemory)[i] << endl;
+		tcout << TEXT("Posicao ") << i << TEXT(": ") << ptrKeysInMemory[i] << endl;
 	}
 
 }
@@ -126,7 +132,7 @@ void readKeys() { //TODO: read only when event happens!
 void newKeyPressed(TCHAR tecla) { 
 	WaitForSingleObject(hMutexWritingKey[ownId], INFINITE);
 
-	(*ptrKeysInMemory)[ownId] = tecla;
+	ptrKeysInMemory[ownId] = tecla;
 
 	ReleaseMutex(hMutexWritingKey[ownId]); 
 	SetEvent(hEventKeyPressed[ownId]); // Mete evento a TRUE
@@ -136,11 +142,11 @@ void newKeyPressed(TCHAR tecla) {
 int getOwnKeyArrayPosition() {
 
 	for (int i = 0; i < MAX_PLAYERS; i++) {
-		if ((*ptrKeysInMemory)[i] == 'e') {
+		if (ptrKeysInMemory[i] == 'e') {
 
 			WaitForSingleObject(hMutexWritingKey[i], INFINITE);
 
-			(*ptrKeysInMemory)[i] = 'o'; 
+			ptrKeysInMemory[i] = 'o'; 
 			
 			ReleaseMutex(hMutexWritingKey[i]);
 
@@ -171,15 +177,9 @@ void writeMapInMemory(TCHAR ** map) {
 	return;
 }
 
-TCHAR** readMapInMemory() {
+void readMapInMemory(TCHAR ** map) {
 
-	TCHAR ** map; //TODO: isto so e reservado 1 vez no jogo todo! nao e em cada read!
-
-	map = (TCHAR **)malloc(MAP_ROWS * sizeof(TCHAR *));
-
-	for (int i = 0; i < MAP_ROWS; i++) {
-		map[i] = (TCHAR *)malloc(MAP_COLUMNS * sizeof(TCHAR));
-	}
+	
 
 	WaitForSingleObject(hEventMapChanges[ownId], INFINITE);
 	for (int i = 0; i < MAP_ROWS; i++) {
@@ -191,12 +191,14 @@ TCHAR** readMapInMemory() {
 	}
 
 	ResetEvent(hEventMapChanges[ownId]);
-	return map;
+	return;
 }
 
 //TODO: close all handles here!
 void destroyMap() {
 	UnmapViewOfFile(ptrMapInMemory);
+	UnmapViewOfFile(ptrKeysInMemory);
 	CloseHandle(hMapMemory);
+	CloseHandle(hKeysMemory);
 }
 

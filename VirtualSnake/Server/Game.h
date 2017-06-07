@@ -35,3 +35,5 @@ void startGame();
 void tryToMoveSnake(int player, TCHAR keyPressed);
 Game * getCurrentGame();
 void standardMovement(int, int, int);
+void eatingMovement(int, int, int);
+bool validMovement(int player, TCHAR keyPressed);

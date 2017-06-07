@@ -2,8 +2,6 @@
 
 using namespace std;
 
-
-
 int _tmain(int argc, TCHAR *argv[]) {
 
 #ifdef UNICODE
@@ -22,36 +20,53 @@ int _tmain(int argc, TCHAR *argv[]) {
 #define tstring string
 #endif
 
+	tcout << TEXT("Primeira mensagem!");
+
 	TCHAR tecla[256];
-	Game *copyOfGame = (Game *)malloc(sizeof(Game));
+	Game *copyOfGame; //= (Game *)malloc(sizeof(Game));
+
+	/*if (copyOfGame == NULL) {
+		tcout << TEXT("Erro na alocacao de memoria de CopyofGame* !");
+		exit(0);
+	}*/
 
 	//Game initialization
-
+	tcout << TEXT("initGame!");
 	initGame();
+	tcout << TEXT("FIM initGame!");
 
+	tcout << TEXT("copyOfGame!");
 	copyOfGame = getCurrentGame(); //TODO: neste momento esta a usar o getCurrentGame. Para usar uma copia, usar o metodo createCopyOfGame()
 	//createCopyOfGame();
-
+	tcout << TEXT("FIM copyOfGame!");
 
 
 	//Local clients Configuration
-
+	tcout << TEXT("initMemory!");
 	initMemory();
+	tcout << TEXT("FIM initMemory!");
+
+	tcout << TEXT("initSynchHandles!");
 	initSynchHandles();
+	tcout << TEXT("FIM initSynchHandles!");
+	tcout << TEXT("initArrayOfKeys!");
 	initArrayOfKeys();
+	tcout << TEXT("FIM initArrayOfKeys!");
 	
 	
 	//CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)WaitForLocalClients, (LPVOID)hEventNewClient, 0, NULL); //Clients.cpp
 	CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)WaitForLocalClients, (LPVOID)copyOfGame, 0, NULL); //TODO: isto tem a copia do jogo! atencao!
 
-
-
 	//Remote Clients configuration!
 
 	CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)WaitForRemoteClients, NULL, 0, NULL); //Clients.cpp
 
+	SetEvent(hEventServerIsOnline); //Avisa o cliente de que o server ja esta online e pronto a receber clientes
+
 	_tprintf(TEXT("[SERVER] Servidor lancado! Pressione uma tecla para comecar o jogo!"));
 	_fgetts(tecla, 256, stdin);
+
+	
 	
 	startGame();
 	copyOfGame = getCurrentGame();

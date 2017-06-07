@@ -94,9 +94,17 @@ TCHAR ** createMap() {
 	TCHAR ** map;
 
 	map = (TCHAR **)malloc(MAP_ROWS * sizeof(TCHAR *));
+	if (map == NULL) {
+		tcout << TEXT("Erro na alocacao de memoria de TCHAR** (map) !");
+		exit(0);
+	}
 
 	for (int i = 0; i < MAP_ROWS; i++) {
 		map[i] = (TCHAR *)malloc(MAP_COLUMNS * sizeof(TCHAR));
+		if (map[i] == NULL) {
+			tcout << TEXT("Erro na alocacao de memoria de TCHAR* (map) !");
+			exit(0);
+		}
 	}
 
 	srand(time(NULL));
@@ -123,68 +131,62 @@ TCHAR ** createMap() {
 
 void generateItems(TCHAR **map, int counterOfObjects) {
 
-	//enum effects nElements = numberOfElements; //Contains the number of elements 
-
-	//int counterOfObjects = 0;
 	int x, y;
 
 	do {
 
-		//tcout << counterOfObjects << TEXT(" - ");
 		x = (rand() % (MAP_ROWS - 2)) + 1;
 		y = (rand() % (MAP_COLUMNS - 2)) + 1;
 
-		//tcout << TEXT("trying with ") << rndColumn << TEXT(",") << rndRow << endl;
-
 		if (map[x][y] == FLOOR) {
 
-			switch (rand() % numberOfElements)
+			//switch (rand() % numberOfElements) //TODO: just for testing
+			switch(food)
 			{
 			case food:
 				/*tcout << rndColumn << TEXT(",") << rndRow << TEXT(" food");
 				tcout << endl;*/
 				map[x][y] = FOOD;
 				break;
-			case ice:
-				/*tcout << rndColumn << TEXT(",") << rndRow << TEXT(" ice");
-				tcout << endl;*/
+			/*case ice:
+				
 				map[x][y] = ICE;
 				break;
 			case grenade:
 				/*tcout << rndColumn << TEXT(",") << rndRow << TEXT(" grenade");
-				tcout << endl;*/
+				tcout << endl;
 				map[x][y] = GRENADE;
 				break;
 			case vodka:
 				/*tcout << rndColumn << TEXT(",") << rndRow << TEXT(" vodka");
-				tcout << endl;*/
+				tcout << endl;
 				map[x][y] = VODKA;
 				break;
 			case oil:
 				/*tcout << rndColumn << TEXT(",") << rndRow << TEXT(" oil");
-				tcout << endl;*/
+				tcout << endl;
 				map[x][y] = OIL;
 				break;
 			case glue:
 				/*tcout << rndColumn << TEXT(",") << rndRow << TEXT(" glue");
-				tcout << endl;*/
+				tcout << endl;
 				map[x][y] = GLUE;
 				break;
 			case o_vodka:
 				/*tcout << rndColumn << TEXT(",") << rndRow << TEXT(" o_vodka");
-				tcout << endl;*/
+				tcout << endl;
 				map[x][y] = O_VODKA;
 				break;
 			case o_oil:
 				/*tcout << rndColumn << TEXT(",") << rndRow << TEXT(" o_oil");
-				tcout << endl;*/
+				tcout << endl;
 				map[x][y] = O_OIL;
 				break;
 			case o_glue:
 				/*tcout << rndColumn << TEXT(",") << rndRow << TEXT(" o_glue");
-				tcout << endl;*/
+				tcout << endl;
 				map[x][y] = O_GLUE;
-				break;
+				break;*/
 			default:
 				tcout << x << TEXT(",") << y << TEXT(" default! DEU ASNEIRA! PROCURAR BUG NO MAP.CPP");
 				tcout << endl;
