@@ -49,6 +49,7 @@ void initSnakes() {
 		game->snake[i]->size = SNAKE_INITIAL_SIZE;
 		game->snake[i]->speed = SNAKE_BASE_SPEED;
 		game->snake[i]->direction = SNAKE_DEFAULT_DIRECTION;
+		game->snake[i]->isActive = false;
 
 		//Valores invalidos!!!! Passam a validos apos startGame
 		game->snake[i]->bodyRow = (int *)malloc(SNAKE_INITIAL_SIZE * sizeof(int));

@@ -34,5 +34,6 @@
 
 //PIPES
 #define PIPE_SERVER TEXT("\\\\.\\pipe\\server") 
+#define PIPE_CLIENT TEXT("\\\\.\\pipe\\client") 
 #define N_PIPES 4
 

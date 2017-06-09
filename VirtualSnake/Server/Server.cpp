@@ -54,12 +54,12 @@ int _tmain(int argc, TCHAR *argv[]) {
 	tcout << TEXT("FIM initArrayOfKeys!");
 	
 	
-	//CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)WaitForLocalClients, (LPVOID)hEventNewClient, 0, NULL); //Clients.cpp
-	CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)WaitForLocalClients, (LPVOID)copyOfGame, 0, NULL); //TODO: isto tem a copia do jogo! atencao!
+	//CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)waitForLocalClients, (LPVOID)hEventNewClient, 0, NULL); //Clients.cpp
+	CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)waitForLocalClients, (LPVOID)copyOfGame, 0, NULL); //TODO: isto tem a copia do jogo! atencao!
 
 	//Remote Clients configuration!
 
-	CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)WaitForRemoteClients, NULL, 0, NULL); //Clients.cpp
+	CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)waitForRemoteClients, (LPVOID)copyOfGame, 0, NULL); //Clients.cpp
 
 	SetEvent(hEventServerIsOnline); //Avisa o cliente de que o server ja esta online e pronto a receber clientes
 
@@ -69,6 +69,9 @@ int _tmain(int argc, TCHAR *argv[]) {
 	
 	
 	startGame();
+
+	readKeys();
+
 	copyOfGame = getCurrentGame();
 
 

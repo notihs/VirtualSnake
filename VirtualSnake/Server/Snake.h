@@ -11,4 +11,5 @@ typedef struct Snake {
 	int *bodyColumn;    //1st position -> tail, size position -> head
 	TCHAR direction;
 	bool alive;
+	bool isActive;
 }Snake;

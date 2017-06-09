@@ -180,7 +180,6 @@ void writeMapInMemory(TCHAR ** map) {
 void readMapInMemory(TCHAR ** map) {
 
 	
-
 	WaitForSingleObject(hEventMapChanges[ownId], INFINITE);
 	for (int i = 0; i < MAP_ROWS; i++) {
 		for (int j = 0; j < MAP_COLUMNS; j++) {

@@ -8,3 +8,5 @@
 #include <string>
 #include <fcntl.h>
 #include <io.h>
+#include <aclapi.h>
+#include <strsafe.h>
