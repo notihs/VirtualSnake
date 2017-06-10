@@ -38,16 +38,16 @@ DWORD WINAPI waitForRemoteClients(LPVOID param) {
 				| PIPE_READMODE_MESSAGE, N_PIPES, sizeof(TCHAR), sizeof(TCHAR), 1000, &sa);
 
 			hPipeWrite[i] = CreateNamedPipe(PIPE_CLIENT, PIPE_ACCESS_OUTBOUND, PIPE_WAIT | PIPE_TYPE_MESSAGE
-				| PIPE_READMODE_MESSAGE, N_PIPES, sizeof(TCHAR), sizeof(TCHAR), 1000, &sa);
+				| PIPE_READMODE_MESSAGE, N_PIPES, sizeof(TCHAR[MAP_ROWS][MAP_COLUMNS]), sizeof(TCHAR[MAP_ROWS][MAP_COLUMNS]), 1000, &sa);
 
 			if (hPipeRead[i] == INVALID_HANDLE_VALUE || hPipeWrite[i] == INVALID_HANDLE_VALUE) {
 				_tprintf(TEXT("Erro na ligação ao cliente!"));
 				exit(-1);
 			}
 
-			_tprintf(TEXT("[SERVIDOR] Esperar ligação de um cliente... (ConnectNamedPipe)\n"));
+			_tprintf(TEXT("[SERVIDOR] A espera de clientes! (ConnectNamedPipe)\n\n"));
 			ConnectNamedPipe(hPipeRead[i], NULL); 
-			//ConnectNamedPipe(hPipeWrite[i], NULL);
+			ConnectNamedPipe(hPipeWrite[i], NULL);
 
 			for (int j = 0; j < MAX_PLAYERS; j++) {
 				if (!game->snake[j]->isActive) {
@@ -63,13 +63,15 @@ DWORD WINAPI waitForRemoteClients(LPVOID param) {
 				}
 			}
 
+			tcout << TEXT("[NAMED PIPE] Um cliente ligou-se!") << endl;
+
 			CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)readKeyFromRemoteClient, (LPVOID)auxStruct, 0, NULL); //TODO: add another thread to write
 			CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)moveSnakeToDirectionRemote, (LPVOID)auxStruct, 0, NULL);
 
-			_tprintf(TEXT("Done"));
+			//_tprintf(TEXT("Done"));
 		}
 		else if (i == MAX_PLAYERS) {
-			_tprintf(TEXT("[SERVER] Numero maximo de clientes ligado!"));
+			_tprintf(TEXT("[SERVER] Numero maximo de clientes ligados!"));
 		}
 	}
 	return NULL;
@@ -92,12 +94,12 @@ DWORD WINAPI readKeyFromRemoteClient(LPVOID param) {
 	key = (TCHAR *)malloc(sizeof(TCHAR));
 
 	while (1) {
-		tcout << TEXT("A espera de teclas!");
+		//tcout << TEXT("A espera de teclas!");
 		ret = ReadFile(pipe, key, sizeof(TCHAR), &n, NULL);
 		buffer[n / sizeof(TCHAR)] = '\0';
 		if (!ret || !n)
 			break;
-		tcout << TEXT("tecla recebida: ") << key[0];
+		tcout << TEXT("[NAMED PIPE]Tecla recebida: ") << key[0] << endl;
 
 		if (validMovement(snake->id, key[0])) {
 			snake->direction = key[0]; //TODO: add mutex here or something
@@ -119,11 +121,11 @@ DWORD WINAPI moveSnakeToDirectionRemote(LPVOID param) {
 	//TODO: fazer connect aqui?
 
 	TCHAR ** map;
-	TCHAR *key;
+	//TCHAR *key;
 
-	key = (TCHAR *)malloc(sizeof(TCHAR));
+	//key = (TCHAR *)malloc(sizeof(TCHAR));
 
-	key[0];
+	//key[0] = 'x';
 
 	map = (TCHAR **)malloc(MAP_ROWS * sizeof(TCHAR *));
 	if (map == NULL) {
@@ -142,15 +144,26 @@ DWORD WINAPI moveSnakeToDirectionRemote(LPVOID param) {
 
 	while (1) {
 
-		tryToMoveSnake(snake->id, snake->direction); //TODO: fazer reaMapFrom memory e escrever isso no pipe para mandar para o cliente
+		tryToMoveSnake(snake->id, snake->direction); 
 		readMapInMemory(map);
 
-		//TCHAR wtv = 'y';
+		tcout << TEXT("O que o map tem la dentro! ") << endl;
+		showMap(map);
 
-		/*if (!WriteFile(pipe, key, sizeof(TCHAR), &n, NULL)) {
+		TCHAR aux[MAP_ROWS][MAP_COLUMNS]; //TODO: isto esta estrnho xD se nao der doutra maneira, fica assim
+
+		for (int i = 0; i < MAP_ROWS; i++) {
+			for (int j = 0; j < MAP_COLUMNS; j++) {
+				aux[i][j] = map[i][j];
+			}
+		}
+
+		if (!WriteFile(pipe, aux, sizeof(TCHAR[MAP_ROWS][MAP_COLUMNS]), &n, NULL)) {
 			_tprintf(TEXT("[ERRO] Escrever no pipe... (WriteFile)\n"));
-		}*/
+		}
 
+		tcout << TEXT("Mandei ") << n << TEXT(" bytes");
+		
 		Sleep(2000 / snake->speed);
 	}
 
@@ -168,7 +181,7 @@ void Security(SECURITY_ATTRIBUTES &sa)
 	EXPLICIT_ACCESS ea;
 	PSID pEveryoneSID = NULL, pAdminSID = NULL;
 	SID_IDENTIFIER_AUTHORITY SIDAuthWorld = SECURITY_WORLD_SID_AUTHORITY;
-	TCHAR str[256];
+	//TCHAR str[256];
 	pSD = (PSECURITY_DESCRIPTOR)LocalAlloc(LPTR, SECURITY_DESCRIPTOR_MIN_LENGTH);
 	if (pSD == NULL) {
 		_tprintf(TEXT("Erro LocalAlloc!!!(%d)\n"), GetLastError());
@@ -204,9 +217,9 @@ void Security(SECURITY_ATTRIBUTES &sa)
 		sa.lpSecurityDescriptor = pSD;
 		sa.bInheritHandle = TRUE;
 		if (!CreateDirectory(TEXT("c:\\teste3"), &sa))
-			_tprintf(TEXT("Erro CreateDir!!!(%d)\n"), GetLastError());
+			_tprintf(TEXT("\nErro CreateDir!!!(%d)\n"), GetLastError());
 		else
-			_tprintf(TEXT("Directory c:\\teste3 successfuly created\n"));
+			_tprintf(TEXT("\nDirectory c:\\teste3 successfuly created\n"));
 	}
 }
 

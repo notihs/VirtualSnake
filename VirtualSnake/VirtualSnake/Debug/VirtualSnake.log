@@ -1,13 +1,3 @@
 ﻿  Main.cpp
-c:\users\daniel simões\dropbox\so2 - 2016-2017\trabalho\virtualsnake\virtualsnake\main.cpp(98): warning C4101: 'up': unreferenced local variable
-c:\users\daniel simões\dropbox\so2 - 2016-2017\trabalho\virtualsnake\virtualsnake\main.cpp(98): warning C4101: 'left': unreferenced local variable
-c:\users\daniel simões\dropbox\so2 - 2016-2017\trabalho\virtualsnake\virtualsnake\main.cpp(99): warning C4101: 'res': unreferenced local variable
-c:\users\daniel simões\dropbox\so2 - 2016-2017\trabalho\virtualsnake\virtualsnake\main.cpp(98): warning C4101: 'down': unreferenced local variable
-c:\users\daniel simões\dropbox\so2 - 2016-2017\trabalho\virtualsnake\virtualsnake\main.cpp(98): warning C4101: 'right': unreferenced local variable
-c:\users\daniel simões\dropbox\so2 - 2016-2017\trabalho\virtualsnake\virtualsnake\main.cpp(186): warning C4101: 'buffer': unreferenced local variable
-c:\users\daniel simões\dropbox\so2 - 2016-2017\trabalho\virtualsnake\virtualsnake\main.cpp(257): warning C4101: 'n': unreferenced local variable
-c:\users\daniel simões\dropbox\so2 - 2016-2017\trabalho\virtualsnake\virtualsnake\main.cpp(260): warning C4101: 'buffer': unreferenced local variable
-c:\users\daniel simões\dropbox\so2 - 2016-2017\trabalho\virtualsnake\virtualsnake\main.cpp(259): warning C4101: 'ret': unreferenced local variable
-c:\users\daniel simões\dropbox\so2 - 2016-2017\trabalho\virtualsnake\virtualsnake\main.cpp(258): warning C4101: 'key': unreferenced local variable
   VirtualSnake.vcxproj -> C:\Users\Daniel Simões\Dropbox\SO2 - 2016-2017\Trabalho\VirtualSnake\Debug\VirtualSnake.exe
   VirtualSnake.vcxproj -> C:\Users\Daniel Simões\Dropbox\SO2 - 2016-2017\Trabalho\VirtualSnake\Debug\VirtualSnake.pdb (Full PDB)

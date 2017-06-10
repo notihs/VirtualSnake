@@ -50,7 +50,7 @@ TCHAR keyPress(TCHAR *teclas) {
 	TCHAR right = teclas[3];
 
 
-	tcout << endl << TEXT("Movimento:");
+	//tcout << endl << TEXT("Movimento:");
 	TCHAR key = _getch();
 	TCHAR aux;
 

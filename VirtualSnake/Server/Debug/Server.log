@@ -1,6 +1,4 @@
 ﻿  RemoteClient.cpp
-c:\users\daniel simões\dropbox\so2 - 2016-2017\trabalho\virtualsnake\server\remoteclient.cpp(154): warning C4244: 'argument': conversion from 'float' to 'DWORD', possible loss of data
-c:\users\daniel simões\dropbox\so2 - 2016-2017\trabalho\virtualsnake\server\remoteclient.cpp(115): warning C4101: 'n': unreferenced local variable
-c:\users\daniel simões\dropbox\so2 - 2016-2017\trabalho\virtualsnake\server\remoteclient.cpp(171): warning C4101: 'str': unreferenced local variable
+c:\users\daniel simões\dropbox\so2 - 2016-2017\trabalho\virtualsnake\server\remoteclient.cpp(167): warning C4244: 'argument': conversion from 'float' to 'DWORD', possible loss of data
   Server.vcxproj -> C:\Users\Daniel Simões\Dropbox\SO2 - 2016-2017\Trabalho\VirtualSnake\Debug\Server.exe
   Server.vcxproj -> C:\Users\Daniel Simões\Dropbox\SO2 - 2016-2017\Trabalho\VirtualSnake\Debug\Server.pdb (Full PDB)

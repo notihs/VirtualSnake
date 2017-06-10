@@ -165,9 +165,9 @@ void writeMapInMemory(TCHAR ** map) {
 	for (int i = 0; i < MAP_ROWS; i++) {
 		for (int j = 0; j < MAP_COLUMNS; j++) {
 			(*ptrMapInMemory)[i][j] = map[i][j];
-			tcout << (*ptrMapInMemory)[i][j];
+			//tcout << (*ptrMapInMemory)[i][j];
 		}
-		tcout << endl;
+		//tcout << endl;
 	}
 
 	for (int i = 0; i < MAX_PLAYERS;i++) {
@@ -184,9 +184,9 @@ void readMapInMemory(TCHAR ** map) {
 	for (int i = 0; i < MAP_ROWS; i++) {
 		for (int j = 0; j < MAP_COLUMNS; j++) {
 			map[i][j] = (*ptrMapInMemory)[i][j];
-			tcout << map[i][j];
+			//tcout << map[i][j];
 		}
-		tcout << endl;
+		//tcout << endl;
 	}
 
 	ResetEvent(hEventMapChanges[ownId]);

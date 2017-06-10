@@ -20,8 +20,6 @@ int _tmain(int argc, TCHAR *argv[]) {
 #define tstring string
 #endif
 
-	tcout << TEXT("Primeira mensagem!");
-
 	TCHAR tecla[256];
 	Game *copyOfGame; //= (Game *)malloc(sizeof(Game));
 
@@ -31,29 +29,18 @@ int _tmain(int argc, TCHAR *argv[]) {
 	}*/
 
 	//Game initialization
-	tcout << TEXT("initGame!");
-	initGame();
-	tcout << TEXT("FIM initGame!");
 
-	tcout << TEXT("copyOfGame!");
+	initGame();
+
 	copyOfGame = getCurrentGame(); //TODO: neste momento esta a usar o getCurrentGame. Para usar uma copia, usar o metodo createCopyOfGame()
 	//createCopyOfGame();
-	tcout << TEXT("FIM copyOfGame!");
-
+	
 
 	//Local clients Configuration
-	tcout << TEXT("initMemory!");
 	initMemory();
-	tcout << TEXT("FIM initMemory!");
-
-	tcout << TEXT("initSynchHandles!");
 	initSynchHandles();
-	tcout << TEXT("FIM initSynchHandles!");
-	tcout << TEXT("initArrayOfKeys!");
 	initArrayOfKeys();
-	tcout << TEXT("FIM initArrayOfKeys!");
-	
-	
+
 	//CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)waitForLocalClients, (LPVOID)hEventNewClient, 0, NULL); //Clients.cpp
 	CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)waitForLocalClients, (LPVOID)copyOfGame, 0, NULL); //TODO: isto tem a copia do jogo! atencao!
 
@@ -63,23 +50,23 @@ int _tmain(int argc, TCHAR *argv[]) {
 
 	SetEvent(hEventServerIsOnline); //Avisa o cliente de que o server ja esta online e pronto a receber clientes
 
-	_tprintf(TEXT("[SERVER] Servidor lancado! Pressione uma tecla para comecar o jogo!"));
+	_tprintf(TEXT("[SERVER] Servidor lancado! Pressione uma tecla para comecar o jogo!\n\n"));
 	_fgetts(tecla, 256, stdin);
 
 	
 	
 	startGame();
 
-	readKeys();
+	//readKeys();
 
 	copyOfGame = getCurrentGame();
 
 
-	tcout << endl << endl;
+	/*tcout << endl << endl;
 	showSnakeInfo();
 	tcout << endl << endl;
 	showSnakeInfo();
-	tcout << endl << endl;
+	tcout << endl << endl;*/
 
 	writeMapInMemory(copyOfGame->map); //DLL
 	SetEvent(hEventGameStarted); //TODO: Sera evento a anunciar a TODOS os utilizadores que ja comecou??

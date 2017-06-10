@@ -95,8 +95,8 @@ int _tmain(int argc, TCHAR *argv[]) {
 
 void localGame(TCHAR ** map) {
 
-	TCHAR up, down, left, right;
-	TCHAR res;
+//	TCHAR up, down, left, right;
+	//TCHAR res;
 
 	initMemory();
 	
@@ -109,33 +109,7 @@ void localGame(TCHAR ** map) {
 	}
 
 	TCHAR *teclas = chooseKeys();
-	/*
-	do {
-		tcout << TEXT("Escolha as teclas para se movimentar: ");
-		tcout << TEXT("\n\nTecla para cima: ");
-		up = _getch();
-		do {
-			tcout << TEXT("\nTecla para baixo: ");
-			down = _getch();
-		} while (down == up);
-		do {
-			tcout << TEXT("\nTecla para esquerda: ");
-			left = _getch();
-		} while (left == down || left == up);
-		do {
-			tcout << TEXT("\nTecla para direita: ");
-			right = _getch();
-		} while (right == down || right == up || right == left);
-
-		tcout << TEXT("\n\nTeclas escolhidas: ");
-		tcout << endl << TEXT("Cima: ") << up;
-		tcout << endl << TEXT("Baixo: ") << down;
-		tcout << endl << TEXT("Esquerda: ") << left;
-		tcout << endl << TEXT("Direita: ") << right;
-		tcout << endl << endl << TEXT("Confirma estas teclas? (S/N)");
-		res = _getch();
-
-	} while (_totupper(res) != 'S');*/
+	
 
 	tcout << endl << endl << TEXT("Aguarde pelo inicio do jogo!");
 
@@ -143,30 +117,7 @@ void localGame(TCHAR ** map) {
 	
 	CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)WaitForMapChanges, (LPVOID)map, 0, NULL);
 
-	//readMapInMemory(); //DLL
-
 	while (1) {
-
-		/*tcout << endl << TEXT("Movimento:");
-						   //TCHAR key = _gettchar();
-		TCHAR key = _getch(); 
-		TCHAR aux;
-
-		if (key == up) {
-			aux = 'u';
-		}
-		else if (key == down) {
-			aux = 'd';
-		}
-		else if (key == left) {
-			aux = 'l';
-		}
-		else if (key == right) {
-			aux = 'r';
-		}
-		else {
-			continue;
-		}*/
 
 		TCHAR aux = keyPress(teclas);
 
@@ -174,16 +125,13 @@ void localGame(TCHAR ** map) {
 			newKeyPressed(aux);
 		}
 
-		
-
-		//readMapInMemory(); //TODO: este read tem que estar numa thread!
 	}
 }
 
 void remoteGame(TCHAR **map) {
 
 	TCHAR ip[IPSIZE];
-	TCHAR buffer[256];
+	//TCHAR buffer[256];
 	DWORD n;
 
 	while (1) {
@@ -205,32 +153,38 @@ void remoteGame(TCHAR **map) {
 		_tprintf(TEXT("[CLIENTE]Esperar pelo pipe '%s'(WaitNamedPipe)\n"), pipeReadName);
 		if (!WaitNamedPipe(pipeWriteName, NMPWAIT_WAIT_FOREVER)) {
 			_tprintf(TEXT("[ERRO] Ligar ao pipe '%s'... (WaitNamedPipe)\n"), pipeWriteName);
-			//exit(-1);
+			exit(-1);
 		}
 
 		if (!WaitNamedPipe(pipeReadName, NMPWAIT_WAIT_FOREVER)) {
 			_tprintf(TEXT("[ERRO] Ligar ao pipe '%s'... (WaitNamedPipe)\n"), pipeReadName);
-			//exit(-1);
+			exit(-1);
 		}
 
-		_tprintf(TEXT("[CLIENTE] Ligação ao servidor... (CreateFile)\n"));
+		_tprintf(TEXT("[CLIENTE] A efetuar ligação ao servidor... (CreateFile)\n"));
 		hPipeWrite = CreateFile(pipeWriteName, GENERIC_WRITE, 0, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
 		if (hPipeWrite == NULL) {
 			_tprintf(TEXT("[ERRO] Ligar ao pipe '%s'... (CreateFile)\n"), pipeWriteName);
-			//exit(-1);
+			exit(-1);
+		}
+
+		hPipeRead = CreateFile(pipeReadName, GENERIC_READ, 0, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
+		if (hPipeRead == NULL) {
+			_tprintf(TEXT("[ERRO] Ligar ao pipe '%s'... (CreateFile)\n"), pipeReadName);
+			exit(-1);
 		}
 
 		TCHAR *teclas = chooseKeys(); 
 		TCHAR * key = (TCHAR *)malloc(sizeof(TCHAR));
 
+		tcout << endl << endl << TEXT("Aguarde pelo inicio do jogo!");
+
 		WaitForSingleObject(hEventGameStarted, INFINITE);
 
-		//CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)readFromPipe, (LPVOID)map, 0, NULL);
+		CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)readFromPipe, (LPVOID)map, 0, NULL);
 
 		do {
 		
-			//_tprintf(TEXT("\nMensagem: \n->"));
-			//_fgetts(buffer, 256, stdin);
 
 			TCHAR aux = keyPress(teclas);
 
@@ -255,113 +209,50 @@ DWORD WINAPI readFromPipe(LPVOID param) {
 
 	TCHAR ** map = (TCHAR **)param;
 	DWORD n;
-	TCHAR key;
+//	TCHAR key[1];
 	BOOL ret;
-	TCHAR buffer[256];
+//	TCHAR buffer[256];
+	TCHAR aux[MAP_ROWS][MAP_COLUMNS];
 
-	/*hPipeRead = CreateFile(pipeReadName, GENERIC_READ, 0, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
-	if (hPipeRead == NULL) {
-		_tprintf(TEXT("[ERRO] Ligar ao pipe '%s'... (CreateFile)\n"), pipeReadName);
-		//exit(-1);
-	}
-
+	//TODO: passa-se algo aqui errado!
 	while (1) {
-		ret = ReadFile(hPipeRead, &key, sizeof(TCHAR), &n, NULL);
-		buffer[n / sizeof(TCHAR)] = '\0';
+		ret = ReadFile(hPipeRead, aux, sizeof(TCHAR[MAP_ROWS][MAP_COLUMNS]), &n, NULL);
+		//map[n / sizeof(TCHAR)] = '\0';
 		if (!ret || !n)
 			break;
-		tcout << TEXT("tecla recebida: ") << key;
+		//tcout << TEXT("tecla recebida: ") << key;
+
+		system("cls");
+
+		for (int i = 0; i < MAP_ROWS; i++) {
+			for (int j = 0; j < MAP_COLUMNS; j++) {
+				tcout << aux[i][j];
+			}
+			tcout << endl;
+		}
 	}
-	*/
-
-
-
-	/*SECURITY_ATTRIBUTES sa;
-
-	Security(sa);
-
-	hPipeRead = CreateNamedPipe(PIPE_CLIENT, PIPE_ACCESS_INBOUND, PIPE_WAIT | PIPE_TYPE_MESSAGE
-		| PIPE_READMODE_MESSAGE, N_PIPES, sizeof(TCHAR), sizeof(TCHAR), 1000, &sa);
-
-	if (hPipeRead == INVALID_HANDLE_VALUE) {
-		_tprintf(TEXT("Erro na ligação ao cliente!"));
-		exit(-1);
-	}
-
-	_tprintf(TEXT("[SERVIDOR] Esperar ligação de um cliente... (ConnectNamedPipe)\n"));
-	ConnectNamedPipe(hPipeRead, NULL);*/
+	
 
 	return NULL;
 }
-/*
-void Security(SECURITY_ATTRIBUTES &sa)
-{
-	//SECURITY_ATTRIBUTES sa;
-	PSECURITY_DESCRIPTOR pSD;
-	PACL pAcl;
-	EXPLICIT_ACCESS ea;
-	PSID pEveryoneSID = NULL, pAdminSID = NULL;
-	SID_IDENTIFIER_AUTHORITY SIDAuthWorld = SECURITY_WORLD_SID_AUTHORITY;
-	TCHAR str[256];
-	pSD = (PSECURITY_DESCRIPTOR)LocalAlloc(LPTR, SECURITY_DESCRIPTOR_MIN_LENGTH);
-	if (pSD == NULL) {
-		_tprintf(TEXT("Erro LocalAlloc!!!(%d)\n"), GetLastError());
-		return;
-	}
-	if (!InitializeSecurityDescriptor(pSD, SECURITY_DESCRIPTOR_REVISION)) {
-		_tprintf(TEXT("Erro IniSec!!!(%d)\n"), GetLastError());;
-		return;
-	}
-	// Create a well-known SID for the Everyone group.
-	if (!AllocateAndInitializeSid(&SIDAuthWorld, 1, SECURITY_WORLD_RID, 0, 0, 0, 0, 0, 0, 0, &pEveryoneSID)) {
-		_tprintf(TEXT("AllocateAndInitializeSid() error %u"), GetLastError());
-		Cleanup(pEveryoneSID, pAdminSID, NULL, pSD);
-	}
-	else {
-		_tprintf(TEXT("AllocateAndInitializeSid() for the Everyone group is OK"));
-		ZeroMemory(&ea, sizeof(EXPLICIT_ACCESS));
-		ea.grfAccessPermissions = GENERIC_ALL;
-		ea.grfAccessMode = SET_ACCESS;
-		ea.grfInheritance = SUB_CONTAINERS_AND_OBJECTS_INHERIT;
-		ea.Trustee.TrusteeForm = TRUSTEE_IS_SID;
-		ea.Trustee.TrusteeType = TRUSTEE_IS_WELL_KNOWN_GROUP;
-		ea.Trustee.ptstrName = (LPTSTR)pEveryoneSID;
-		if (SetEntriesInAcl(1, &ea, NULL, &pAcl) != ERROR_SUCCESS) {
-			_tprintf(TEXT("Erro SetAcl!!!(%d)\n"), GetLastError());
-			return;
-		}
-		if (!SetSecurityDescriptorDacl(pSD, TRUE, pAcl, FALSE)) {
-			_tprintf(TEXT("Erro IniSec!!!(%d)\n"), GetLastError());
-			return;
-		}
-		sa.nLength = sizeof(sa);
-		sa.lpSecurityDescriptor = pSD;
-		sa.bInheritHandle = TRUE;
-		if (!CreateDirectory(TEXT("c:\\teste3"), &sa))
-			_tprintf(TEXT("Erro CreateDir!!!(%d)\n"), GetLastError());
-		else
-			_tprintf(TEXT("Directory c:\\teste3 successfuly created\n"));
-	}
-}
 
-void Cleanup(PSID pEveryoneSID, PSID pAdminSID, PACL pACL, PSECURITY_DESCRIPTOR pSD)
-{
-	if (pEveryoneSID)
-		FreeSid(pEveryoneSID);
-	if (pAdminSID)
-		FreeSid(pAdminSID);
-	if (pACL)
-		LocalFree(pACL);
-	if (pSD)
-		LocalFree(pSD);
-}
-*/
+
 DWORD WINAPI WaitForMapChanges(LPVOID param) {
 
 	TCHAR ** map = (TCHAR **)param;
 
 	while (1) {
+
 		readMapInMemory(map);
+
+		system("cls");		//clrscr();
+
+		for (int i = 0; i < MAP_ROWS; i++) {
+			for (int j = 0; j < MAP_COLUMNS; j++) {
+				tcout << map[i][j];
+			}
+			tcout << endl;
+		}
 	}
 
 	return NULL;

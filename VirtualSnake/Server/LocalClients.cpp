@@ -60,7 +60,7 @@ DWORD WINAPI readKeyPressedByLocalClient(LPVOID param) {
 		WaitForSingleObject(hMutexWritingKey[snake->id], INFINITE);
 
 		TCHAR key = ptrKeysInMemory[snake->id];
-		tcout << TEXT("\ntecla recebida: ") << key;
+		tcout << TEXT("[LOCAL CLIENT] tecla recebida: ") << key << endl;
 
 		if (validMovement(snake->id, key)) {
 			snake->direction = key; //TODO: add mutex here or something

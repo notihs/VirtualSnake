@@ -75,7 +75,7 @@ void generateSnakes(TCHAR **map, int nSnakes, Snake ** snake) {
 					
 					//snake[countSnake]->headPositionRow = rndRow;
 					//snake[countSnake]->headPositionColumn = rndColumn;
-					tcout << TEXT("Cabeca da cobra x:" << rndColumn << " y:" << rndRow << endl);
+					//tcout << TEXT("Cabeca da cobra x:" << rndColumn << " y:" << rndRow << endl);
 					countSnake++;
 				}
 				else {

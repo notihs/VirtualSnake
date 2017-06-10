@@ -67,11 +67,7 @@ void initSnakes() {
 			game->snake[i]->bodyRow[j] = -1;
 			game->snake[i]->bodyColumn[j] = -1;
 		}
-		/*
-		game->snake[i]->tailPositionRow = -1;
-		game->snake[i]->tailPositionColumn = -1;
-		game->snake[i]->headPositionRow = -1;
-		game->snake[i]->headPositionColumn = -1;*/
+		
 	}
 
 }
@@ -102,7 +98,7 @@ void showSnakeInfo() {
 void startGame() {
 
 	if(game->activePlayers > 0){
-		tcout << TEXT("Jogadores ativos! -> ") << game->activePlayers;
+		//tcout << TEXT("Jogadores ativos! -> ") << game->activePlayers;
 
 		generateSnakes(game->map, game->activePlayers, game->snake); //Tail & Head position
 
@@ -123,7 +119,6 @@ bool validMovement(int player, TCHAR keyPressed) {
 
 	if (keyPressed == 'u') {
 		if (beforeHeadPosRow == headPosRow - 1 && beforeHeadPosColumn == headPosColumn) {
-			tcout << TEXT("Nao posso mover-me para ai!");
 			return false;
 		}
 	}
@@ -187,7 +182,7 @@ void tryToMoveSnake(int player, TCHAR keyPressed) {
 			}
 		}
 
-		showSnakeInfo();
+		//showSnakeInfo();
 		showMap(game->map);
 		writeMapInMemory(game->map);
 	
