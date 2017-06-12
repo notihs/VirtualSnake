@@ -65,7 +65,7 @@ DWORD WINAPI waitForRemoteClients(LPVOID param) {
 
 			tcout << TEXT("[NAMED PIPE] Um cliente ligou-se!") << endl;
 
-			CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)readKeyFromRemoteClient, (LPVOID)auxStruct, 0, NULL); //TODO: add another thread to write
+			CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)readKeyFromRemoteClient, (LPVOID)auxStruct, 0, NULL); 
 			CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)moveSnakeToDirectionRemote, (LPVOID)auxStruct, 0, NULL);
 
 			//_tprintf(TEXT("Done"));
@@ -101,8 +101,12 @@ DWORD WINAPI readKeyFromRemoteClient(LPVOID param) {
 			break;
 		tcout << TEXT("[NAMED PIPE]Tecla recebida: ") << key[0] << endl;
 
+		if (snake->isDrunk) {
+			key[0] = swapKeys(key[0]);
+		}
+
 		if (validMovement(snake->id, key[0])) {
-			snake->direction = key[0]; //TODO: add mutex here or something
+			snake->direction = key[0]; 
 		}
 	}
 
@@ -118,7 +122,7 @@ DWORD WINAPI moveSnakeToDirectionRemote(LPVOID param) {
 
 	WaitForSingleObject(hEventGameStarted, INFINITE);
 
-	//TODO: fazer connect aqui?
+	
 
 	TCHAR ** map;
 	//TCHAR *key;
@@ -142,7 +146,7 @@ DWORD WINAPI moveSnakeToDirectionRemote(LPVOID param) {
 	}
 
 
-	while (1) {
+	while (snake->alive) {
 
 		tryToMoveSnake(snake->id, snake->direction); 
 		readMapInMemory(map);
@@ -150,7 +154,7 @@ DWORD WINAPI moveSnakeToDirectionRemote(LPVOID param) {
 		tcout << TEXT("O que o map tem la dentro! ") << endl;
 		showMap(map);
 
-		TCHAR aux[MAP_ROWS][MAP_COLUMNS]; //TODO: isto esta estrnho xD se nao der doutra maneira, fica assim
+		TCHAR aux[MAP_ROWS][MAP_COLUMNS]; 
 
 		for (int i = 0; i < MAP_ROWS; i++) {
 			for (int j = 0; j < MAP_COLUMNS; j++) {
@@ -164,8 +168,10 @@ DWORD WINAPI moveSnakeToDirectionRemote(LPVOID param) {
 
 		tcout << TEXT("Mandei ") << n << TEXT(" bytes");
 		
-		Sleep(2000 / snake->speed);
+		Sleep(BASE_SLEEP / snake->speed);
 	}
+
+	//SetEvent(hEventSnakeDied[snake->id]);
 
 	return NULL;
 }

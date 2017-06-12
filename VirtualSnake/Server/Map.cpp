@@ -2,7 +2,7 @@
 
 enum effects {food, ice, grenade, vodka, oil, glue, o_vodka, o_oil, o_glue, numberOfElements}; //numberOfElements always the last one, to get the count!
 
-//int numberOfObjects = (MAP_ROWS + MAP_COLUMNS)/4; //TODO: number of objects should not be fixed!
+//int numberOfObjects = (MAP_ROWS + MAP_COLUMNS)/4; 
 
 void showMap(TCHAR **map) {
 
@@ -64,14 +64,15 @@ void generateSnakes(TCHAR **map, int nSnakes, Snake ** snake) {
 						snake[countSnake]->bodyColumn[bodyCounter] = i;
 						bodyCounter++;
 
-						map[rndRow][i] = (char) (SNAKE_BODY + countSnake); //'rndColumn'; //Corpo  da cobra //TODO: mudar o corpo da cobra para um id? talvez? 
+						map[rndRow][i] = (char) (SNAKE_BODY + countSnake); //'rndColumn'; //Corpo  da cobra 
 						
 					}
 
 					snake[countSnake]->bodyRow[bodyCounter] = rndRow;
 					snake[countSnake]->bodyColumn[bodyCounter] = rndColumn;
 
-					map[rndRow][rndColumn] = SNAKE_HEAD; //Cabeca da cobra
+					//map[rndRow][rndColumn] = SNAKE_HEAD; //Cabeca da cobra com simbolo diferente do corpo!
+					map[rndRow][rndColumn] = (char)(SNAKE_BODY + countSnake); //Cabeca da cobra
 					
 					//snake[countSnake]->headPositionRow = rndRow;
 					//snake[countSnake]->headPositionColumn = rndColumn;
@@ -131,7 +132,7 @@ TCHAR ** createMap() {
 
 void generateItems(TCHAR **map, int counterOfObjects) {
 
-	int x, y;
+	int x, y, rarity;
 
 	do {
 
@@ -140,53 +141,106 @@ void generateItems(TCHAR **map, int counterOfObjects) {
 
 		if (map[x][y] == FLOOR) {
 
-			//switch (rand() % numberOfElements) //TODO: just for testing
-			switch(food)
+			rarity = rand() % 101;
+			int res = rand() % numberOfElements;
+
+			tcout << TEXT("raridade: ") << rarity << TEXT(" em item ") << res << endl;
+
+			
+
+			switch (res) 
 			{
 			case food:
 				/*tcout << rndColumn << TEXT(",") << rndRow << TEXT(" food");
 				tcout << endl;*/
-				map[x][y] = FOOD;
-				break;
-			/*case ice:
+				if (rarity <= COMMON) {
+					map[x][y] = FOOD;
+				}
+				else {
+					counterOfObjects--;
+				}
 				
-				map[x][y] = ICE;
+				break;
+			case ice:
+				if (rarity <= UNCOMMON) {
+					map[x][y] = ICE;
+				}
+				else {
+					counterOfObjects--;
+				}
 				break;
 			case grenade:
 				/*tcout << rndColumn << TEXT(",") << rndRow << TEXT(" grenade");
-				tcout << endl;
-				map[x][y] = GRENADE;
+				tcout << endl;*/
+				if (rarity <= RARE) {
+					map[x][y] = GRENADE;
+				}
+				else {
+					counterOfObjects--;
+				}
 				break;
 			case vodka:
 				/*tcout << rndColumn << TEXT(",") << rndRow << TEXT(" vodka");
-				tcout << endl;
-				map[x][y] = VODKA;
+				tcout << endl;*/
+				if (rarity <= RARE) {
+					map[x][y] = VODKA;
+				}
+				else {
+					counterOfObjects--;
+				}
 				break;
 			case oil:
 				/*tcout << rndColumn << TEXT(",") << rndRow << TEXT(" oil");
-				tcout << endl;
-				map[x][y] = OIL;
+				tcout << endl;*/
+				if (rarity <= UNCOMMON) {
+					map[x][y] = OIL;
+				}
+				else {
+					counterOfObjects--;
+				}
+				break;
 				break;
 			case glue:
 				/*tcout << rndColumn << TEXT(",") << rndRow << TEXT(" glue");
-				tcout << endl;
-				map[x][y] = GLUE;
+				tcout << endl;*/
+				if (rarity <= UNCOMMON) {
+					map[x][y] = GLUE;
+				}
+				else {
+					counterOfObjects--;
+				}
+				break;
 				break;
 			case o_vodka:
 				/*tcout << rndColumn << TEXT(",") << rndRow << TEXT(" o_vodka");
-				tcout << endl;
-				map[x][y] = O_VODKA;
+				tcout << endl;*/
+				if (rarity <= RARE) {
+					map[x][y] = O_VODKA;
+				}
+				else {
+					counterOfObjects--;
+				}
 				break;
 			case o_oil:
 				/*tcout << rndColumn << TEXT(",") << rndRow << TEXT(" o_oil");
-				tcout << endl;
-				map[x][y] = O_OIL;
+				tcout << endl;*/
+				if (rarity <= RARE) {
+					map[x][y] = O_OIL;
+				}
+				else {
+					counterOfObjects--;
+				}
 				break;
 			case o_glue:
 				/*tcout << rndColumn << TEXT(",") << rndRow << TEXT(" o_glue");
-				tcout << endl;
-				map[x][y] = O_GLUE;
-				break;*/
+				tcout << endl;*/
+				if (rarity <= RARE) {
+					map[x][y] = O_GLUE;
+				}
+				else {
+					counterOfObjects--;
+				}
+				break;
 			default:
 				tcout << x << TEXT(",") << y << TEXT(" default! DEU ASNEIRA! PROCURAR BUG NO MAP.CPP");
 				tcout << endl;
@@ -199,7 +253,6 @@ void generateItems(TCHAR **map, int counterOfObjects) {
 
 		counterOfObjects++;
 
-	} while (counterOfObjects < NUMBER_MAX_OF_OBJECTS); //TODO: this is the max of objects, for now.. change this to be dynamic!
+	} while (counterOfObjects < MAX_NUMBER_OF_OBJECTS); 
 }
 
-//TODO: Replace items erased!

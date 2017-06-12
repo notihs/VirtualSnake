@@ -32,7 +32,7 @@ DWORD WINAPI waitForLocalClients(LPVOID param) {
 			tcout << TEXT("\n\nNao aceita mais clientes");
 		}
 		//bufferKeyPosition++;
-		//game->activePlayers = bufferKeyPosition; //TODO: mudar isto
+		//game->activePlayers = bufferKeyPosition; 
 	}
 }
 
@@ -42,11 +42,13 @@ DWORD WINAPI moveSnakeToDirectionLocal(LPVOID param) {
 
 	WaitForSingleObject(hEventGameStarted, INFINITE);
 
-	while (1) {
+	while (snake->alive) { 
 
 		tryToMoveSnake(snake->id, snake->direction);
-		Sleep(2000/snake->speed);
+		Sleep(BASE_SLEEP /snake->speed);
 	}
+
+	SetEvent(hEventSnakeDied[snake->id]); 
 
 	return NULL;
 }
@@ -62,8 +64,13 @@ DWORD WINAPI readKeyPressedByLocalClient(LPVOID param) {
 		TCHAR key = ptrKeysInMemory[snake->id];
 		tcout << TEXT("[LOCAL CLIENT] tecla recebida: ") << key << endl;
 
+		
+		if (snake->isDrunk) {
+			key = swapKeys(key);
+		}
+
 		if (validMovement(snake->id, key)) {
-			snake->direction = key; //TODO: add mutex here or something
+			snake->direction = key; 
 		}
 
 		//tryToMoveSnake(snake->id, tecla);
@@ -76,4 +83,3 @@ DWORD WINAPI readKeyPressedByLocalClient(LPVOID param) {
 	return NULL;
 }
 
-//TODO: finish this

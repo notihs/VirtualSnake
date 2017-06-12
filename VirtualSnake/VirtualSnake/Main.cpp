@@ -86,7 +86,7 @@ int _tmain(int argc, TCHAR *argv[]) {
 			stayHere = true;
 		}
 
-	} while (1); //TODO: while(stayHere)
+	} while (stayHere); 
 
 
 
@@ -128,6 +128,34 @@ void localGame(TCHAR ** map) {
 	}
 }
 
+//TODO: change while para terminar assim que acontecer o evento SnakeisDead, pedir username, e no server, registar esse username no registry com o score
+DWORD WINAPI WaitForMapChanges(LPVOID param) {
+
+	TCHAR ** map = (TCHAR **)param;
+	bool alive = true;
+
+
+	while (alive) {
+
+		alive = readMapInMemory(map);
+
+		system("cls");		//clrscr();
+
+		for (int i = 0; i < MAP_ROWS; i++) {
+			for (int j = 0; j < MAP_COLUMNS; j++) {
+				tcout << map[i][j];
+			}
+			tcout << endl;
+		}
+	}
+
+	tcout << TEXT("Morri! apresenta o score!");
+
+	return NULL;
+
+
+}
+
 void remoteGame(TCHAR **map) {
 
 	TCHAR ip[IPSIZE];
@@ -144,7 +172,7 @@ void remoteGame(TCHAR **map) {
 
 		_stprintf_s(pipeWriteName, BUFFER, TEXT("\\\\%s\\pipe\\server"), ip);
 		_stprintf_s(pipeReadName, BUFFER, TEXT("\\\\%s\\pipe\\client"), ip);
-		//TODO: add pipeReadName here too!
+		
 
 
 		//tcout << pipeWriteName;
@@ -200,7 +228,7 @@ void remoteGame(TCHAR **map) {
 			//tcout << TEXT("\n\nbuffer ->") << buffer;
 
 		} while (1);
-		//TODO: fazer algo apos a conexao ser efetuada com sucesso
+		
 	
 	}
 }
@@ -214,7 +242,7 @@ DWORD WINAPI readFromPipe(LPVOID param) {
 //	TCHAR buffer[256];
 	TCHAR aux[MAP_ROWS][MAP_COLUMNS];
 
-	//TODO: passa-se algo aqui errado!
+	
 	while (1) {
 		ret = ReadFile(hPipeRead, aux, sizeof(TCHAR[MAP_ROWS][MAP_COLUMNS]), &n, NULL);
 		//map[n / sizeof(TCHAR)] = '\0';
@@ -237,28 +265,6 @@ DWORD WINAPI readFromPipe(LPVOID param) {
 }
 
 
-DWORD WINAPI WaitForMapChanges(LPVOID param) {
-
-	TCHAR ** map = (TCHAR **)param;
-
-	while (1) {
-
-		readMapInMemory(map);
-
-		system("cls");		//clrscr();
-
-		for (int i = 0; i < MAP_ROWS; i++) {
-			for (int j = 0; j < MAP_COLUMNS; j++) {
-				tcout << map[i][j];
-			}
-			tcout << endl;
-		}
-	}
-
-	return NULL;
-	
-
-}
 
 TCHAR ** initMalloc() {
 

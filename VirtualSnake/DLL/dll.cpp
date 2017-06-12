@@ -20,11 +20,14 @@ HANDLE hEventNewClient;
 TCHAR eventGameStartedName[TAM] = TEXT("Event game started");
 HANDLE hEventGameStarted;
 
-TCHAR eventMapChangesName[TAM] = TEXT("Event map changes"); 
+TCHAR eventMapChangesName[TAM];// = TEXT("Event map changes");
 HANDLE hEventMapChanges[MAX_PLAYERS];
 
 TCHAR eventServerIsOnlineName[TAM] = TEXT("Event map changes");
 HANDLE hEventServerIsOnline;
+
+TCHAR eventSnakeDiedName[TAM];// = TEXT("Event snake died");
+HANDLE hEventSnakeDied[MAX_PLAYERS];
 
 //MUTEX
 TCHAR mutexWritingKeyName[TAM];
@@ -51,13 +54,16 @@ void initSynchHandles() {
 	for (int i = 0; i < MAX_PLAYERS; i++) {
 		_stprintf_s(eventKeyPressedName, TAM, TEXT("Key Pressed Event %d"), i);
 		_stprintf_s(mutexWritingKeyName, TAM, TEXT("Key Writing Mutex %d"), i);
+		_stprintf_s(eventMapChangesName, TAM, TEXT("Event map changes %d"), i);
+		_stprintf_s(eventSnakeDiedName, TAM, TEXT("Event snake died %d"), i);
 
 		hEventKeyPressed[i] = CreateEvent(NULL, TRUE, FALSE, eventKeyPressedName);
 		hEventMapChanges[i] = CreateEvent(NULL, TRUE, FALSE, eventMapChangesName);
+		hEventSnakeDied[i] = CreateEvent(NULL, TRUE, FALSE, eventSnakeDiedName);
 		
 		hMutexWritingKey[i] = CreateMutex(NULL, FALSE, mutexWritingKeyName);
 		
-		if (hEventKeyPressed[i] == NULL || hEventMapChanges[i] == NULL){
+		if (hEventKeyPressed[i] == NULL || hEventMapChanges[i] == NULL || hEventSnakeDied[i] == NULL){
 			_tprintf(TEXT("[Erro]Criação de eventos(%d)\n"), GetLastError());
 			return;
 		}
@@ -109,9 +115,9 @@ void initMemory() {
 }
 
 
-void initArrayOfKeys() { //TODO: Em principio, nao deve haver problemas de sincronizacao
+void initArrayOfKeys() {
 
-	for (int i = 0; i < MAX_PLAYERS; i++) {
+	for (int i = 0; i < MAX_PLAYERS; i++) { 
 		ptrKeysInMemory[i] = 'e';
 		//tcout << TEXT("Posicao ") << i << TEXT(": ") << ptrKeysInMemory[i] << endl;
 		//_tprintf(TEXT("Posicao %d: %c\n"), i, ptrKeysInMemory[i]);
@@ -120,7 +126,7 @@ void initArrayOfKeys() { //TODO: Em principio, nao deve haver problemas de sincr
 	return;
 }
 
-void readKeys() { //TODO: read only when event happens!
+void readKeys() { 
 
 	for (int i = 0; i < MAX_PLAYERS; i++) {
 		//(*ptrKeysInMemory)[i] = 'e';
@@ -177,20 +183,25 @@ void writeMapInMemory(TCHAR ** map) {
 	return;
 }
 
-void readMapInMemory(TCHAR ** map) {
+bool readMapInMemory(TCHAR ** map) {
 
-	
-	WaitForSingleObject(hEventMapChanges[ownId], INFINITE);
-	for (int i = 0; i < MAP_ROWS; i++) {
-		for (int j = 0; j < MAP_COLUMNS; j++) {
-			map[i][j] = (*ptrMapInMemory)[i][j];
-			//tcout << map[i][j];
+	//bool signaled = WaitForSingleObject(hEventSnakeDied[ownId], INFINITE);
+	//tcout << TEXT("Evento da cobra morta ") << signaled;
+	//if (WaitForSingleObject(hEventSnakeDied[ownId], 0) == WAIT_TIMEOUT) { //TODO: este evento nao esta bem!!!!
+		WaitForSingleObject(hEventMapChanges[ownId], INFINITE);
+		for (int i = 0; i < MAP_ROWS; i++) {
+			for (int j = 0; j < MAP_COLUMNS; j++) {
+				map[i][j] = (*ptrMapInMemory)[i][j];
+				//tcout << map[i][j];
+			}
+			//tcout << endl;
 		}
-		//tcout << endl;
-	}
 
-	ResetEvent(hEventMapChanges[ownId]);
-	return;
+		ResetEvent(hEventMapChanges[ownId]);
+
+		return true;
+	//}
+	//return false;
 }
 
 //TODO: close all handles here!

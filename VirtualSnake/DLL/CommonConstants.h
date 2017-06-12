@@ -11,22 +11,31 @@
 #define FLOOR TEXT('.')
 #define FOOD TEXT('F')
 #define ICE TEXT('I')
-#define GRENADE TEXT('g')
+#define GRENADE TEXT('R')
 #define VODKA TEXT('V')
 #define OIL TEXT('O')
 #define GLUE TEXT('G')
-#define O_VODKA TEXT('B')
-#define O_OIL TEXT('P')
-#define O_GLUE TEXT('H')
-#define SNAKE_HEAD TEXT('~')
+#define O_VODKA TEXT('Z')
+#define O_OIL TEXT('»')
+#define O_GLUE TEXT('«')
+
+//#define SNAKE_HEAD TEXT('~')
 #define SNAKE_BODY 49
 
-#define NUMBER_MAX_OF_OBJECTS (MAP_ROWS + MAP_COLUMNS)/3
+//OBJECTS
+#define MAX_NUMBER_OF_OBJECTS (MAP_ROWS + MAP_COLUMNS)/2
+#define DEFAULT_SCORE 10
+
+//RARITY OF OBJECTS in %
+#define COMMON 80 
+#define UNCOMMON 50
+#define RARE 100
 
 //SNAKE
 #define SNAKE_INITIAL_SIZE 3
-#define SNAKE_BASE_SPEED 1
+#define SNAKE_BASE_SPEED 2
 #define SNAKE_DEFAULT_DIRECTION 'r'
+#define BASE_SLEEP 2000
 
 //BUFFERS
 #define TAM 100

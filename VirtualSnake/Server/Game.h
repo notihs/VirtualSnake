@@ -26,14 +26,24 @@ typedef struct Game {
 
 
 
-Snake initOneSnake(int); //deprecated
 void showSnakeInfo();
-void initSnakes(Snake **snake, int activePlayers); //deprecated
 void initSnakes();
 void initGame(); 
 void startGame();
-void tryToMoveSnake(int player, TCHAR keyPressed);
+void tryToMoveSnake(int, TCHAR);
 Game * getCurrentGame();
 void standardMovement(int, int, int);
 void eatingMovement(int, int, int);
-bool validMovement(int player, TCHAR keyPressed);
+bool validMovement(int, TCHAR);
+void eatingOil(int, int, int);
+void eatingGlue(int, int, int);
+void killSnake(int);
+void eatingGrenade(int, int, int);
+void opponentGlued(int, int, int);
+void opponentOiled(int, int, int);
+void hitWall(int);
+void drinkVodka(int, int, int);
+void opponentDrunk(int, int, int);
+TCHAR swapKeys(TCHAR);
+void getFrozen(int, int, int); //SO diminiu se a cobra tiver maior tamanho do que o inicial
+void nextTile(int, int, int);

@@ -47,14 +47,15 @@ using namespace std;
 	extern DLL_IMP_API HANDLE hEventNewClient;
 	extern DLL_IMP_API HANDLE hEventKeyPressed[MAX_PLAYERS];
 	extern DLL_IMP_API HANDLE hMutexWritingKey[MAX_PLAYERS];
-	extern DLL_IMP_API TCHAR *ptrKeysInMemory; //TODO: demasiado externs? talvez tentar eliminar isto?!?!
+	extern DLL_IMP_API TCHAR *ptrKeysInMemory; 
 	extern DLL_IMP_API HANDLE hEventGameStarted;
 	extern DLL_IMP_API HANDLE hEventServerIsOnline;
+	extern DLL_IMP_API HANDLE hEventSnakeDied[MAX_PLAYERS];
 
 	DLL_IMP_API void initArrayOfKeys();
 	DLL_IMP_API void writeMapInMemory(TCHAR ** map);
 
-	DLL_IMP_API void readMapInMemory(TCHAR **);
+	DLL_IMP_API bool readMapInMemory(TCHAR **);
 	DLL_IMP_API int getOwnKeyArrayPosition();
 	DLL_IMP_API void newKeyPressed(TCHAR tecla);
 

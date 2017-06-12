@@ -1,0 +1,12 @@
+﻿  Base.c
+c:\users\daniel simões\dropbox\so2 - 2016-2017\trabalho\virtualsnake\graphicalvirtualsnake\base.c(56): warning C4047: 'function': 'LPCWSTR' differs in levels of indirection from 'int'
+c:\users\daniel simões\dropbox\so2 - 2016-2017\trabalho\virtualsnake\graphicalvirtualsnake\base.c(56): warning C4024: 'LoadIconW': different types for formal and actual parameter 2
+c:\users\daniel simões\dropbox\so2 - 2016-2017\trabalho\virtualsnake\graphicalvirtualsnake\base.c(60): warning C4047: 'function': 'LPCWSTR' differs in levels of indirection from 'int'
+c:\users\daniel simões\dropbox\so2 - 2016-2017\trabalho\virtualsnake\graphicalvirtualsnake\base.c(60): warning C4024: 'LoadIconW': different types for formal and actual parameter 2
+c:\users\daniel simões\dropbox\so2 - 2016-2017\trabalho\virtualsnake\graphicalvirtualsnake\base.c(172): warning C4047: 'function': 'LPCWSTR' differs in levels of indirection from 'int'
+c:\users\daniel simões\dropbox\so2 - 2016-2017\trabalho\virtualsnake\graphicalvirtualsnake\base.c(172): warning C4024: 'DialogBoxParamW': different types for formal and actual parameter 2
+c:\users\daniel simões\dropbox\so2 - 2016-2017\trabalho\virtualsnake\graphicalvirtualsnake\base.c(176): warning C4047: 'function': 'LPCWSTR' differs in levels of indirection from 'int'
+c:\users\daniel simões\dropbox\so2 - 2016-2017\trabalho\virtualsnake\graphicalvirtualsnake\base.c(176): warning C4024: 'DialogBoxParamW': different types for formal and actual parameter 2
+c:\users\daniel simões\dropbox\so2 - 2016-2017\trabalho\virtualsnake\graphicalvirtualsnake\base.c(158): warning C4101: 'device': unreferenced local variable
+  GraphicalVirtualSnake.vcxproj -> C:\Users\Daniel Simões\Dropbox\SO2 - 2016-2017\Trabalho\VirtualSnake\Debug\GraphicalVirtualSnake.exe
+  GraphicalVirtualSnake.vcxproj -> C:\Users\Daniel Simões\Dropbox\SO2 - 2016-2017\Trabalho\VirtualSnake\Debug\GraphicalVirtualSnake.pdb (Full PDB)

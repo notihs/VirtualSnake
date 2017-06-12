@@ -32,7 +32,7 @@ int _tmain(int argc, TCHAR *argv[]) {
 
 	initGame();
 
-	copyOfGame = getCurrentGame(); //TODO: neste momento esta a usar o getCurrentGame. Para usar uma copia, usar o metodo createCopyOfGame()
+	copyOfGame = getCurrentGame(); 
 	//createCopyOfGame();
 	
 
@@ -42,7 +42,7 @@ int _tmain(int argc, TCHAR *argv[]) {
 	initArrayOfKeys();
 
 	//CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)waitForLocalClients, (LPVOID)hEventNewClient, 0, NULL); //Clients.cpp
-	CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)waitForLocalClients, (LPVOID)copyOfGame, 0, NULL); //TODO: isto tem a copia do jogo! atencao!
+	CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)waitForLocalClients, (LPVOID)copyOfGame, 0, NULL); 
 
 	//Remote Clients configuration!
 
@@ -69,7 +69,7 @@ int _tmain(int argc, TCHAR *argv[]) {
 	tcout << endl << endl;*/
 
 	writeMapInMemory(copyOfGame->map); //DLL
-	SetEvent(hEventGameStarted); //TODO: Sera evento a anunciar a TODOS os utilizadores que ja comecou??
+	SetEvent(hEventGameStarted); 
 
 	while (1) {
 		_tprintf(TEXT("[SERVER] Ciclo infinito! a ler keys nos buffers!"));
