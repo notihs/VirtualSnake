@@ -21,9 +21,12 @@
     <ClInclude Include="CommonConstants.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="CommonStructs.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="dll.cpp">
+    <ClCompile Include="dll.c">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

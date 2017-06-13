@@ -4,6 +4,7 @@
 #include "Snake.h"
 #include "Map.h"
 #include "..\DLL\dll.h"
+#include "..\DLL\CommonStructs.h"
 
 /*typedef struct Snake {
 	int size;
@@ -21,7 +22,7 @@ typedef struct Game {
 	//Snake snake[MAX_PLAYERS];
 	Snake ** snake;
 	int activePlayers;
-	bool hasStarted;
+	boolean hasStarted;
 }Game;
 
 
@@ -34,7 +35,7 @@ void tryToMoveSnake(int, TCHAR);
 Game * getCurrentGame();
 void standardMovement(int, int, int);
 void eatingMovement(int, int, int);
-bool validMovement(int, TCHAR);
+boolean validMovement(int, TCHAR);
 void eatingOil(int, int, int);
 void eatingGlue(int, int, int);
 void killSnake(int);

@@ -2,6 +2,9 @@
 #include <Windows.h>
 #include <tchar.h>
 #include "resource.h"
+#include "..\DLL\CommonConstants.h"
+#include "..\DLL\dll.h"
+
 /* ===================================================== */
 /* Programa base (esqueleto) para aplicações Windows     */
 /* ===================================================== */
@@ -155,19 +158,49 @@ int WINAPI WinMain(HINSTANCE hInst, HINSTANCE hPrevInst, LPSTR lpCmdLine, int nC
 // WM_DESTROY, WM_CHAR, WM_KEYDOWN, WM_PAINT...) definidas em windows.h ============================================================================
 LRESULT CALLBACK HandleEvents(HWND hWnd, UINT messg, WPARAM wParam, LPARAM lParam) {
 
-	HDC device;
+	HDC device, auxDC;
+	PAINTSTRUCT pt;
+	static RECT map;
+	static HBITMAP hBitmapFloor, hBitmapFood;
+	static HBITMAP hBitmapSnakeHeadUp, hBitmapSnakeHeadDown, hBitmapSnakeHeadLeft, hBitmapSnakeHeadRight, hBitmapSnakeBodyHor, hBitmapSnakeBodyVer;
+	static int x, y, alt, larg;
 
 	switch (messg) {
 
+	case WM_CREATE:
+		map.left = 0;
+		map.top = 0;
+		map.bottom = 300;
+		map.right = 300;
+		x = 0;
+		y = 0; 
+		alt = 108;
+		larg = 68;
+
+		hBitmapFloor = LoadBitmap(GetModuleHandle(NULL), MAKEINTRESOURCE(IDB_BITMAP4));
+		hBitmapFood = LoadBitmap(GetModuleHandle(NULL), MAKEINTRESOURCE(IDB_BITMAP3));
+		hBitmapSnakeHeadDown = LoadBitmap(GetModuleHandle(NULL), MAKEINTRESOURCE(IDB_BITMAP1));
+		hBitmapSnakeBodyHor = LoadBitmap(GetModuleHandle(NULL), MAKEINTRESOURCE(IDB_BITMAP2));
+		hBitmapSnakeBodyVer = LoadBitmap(GetModuleHandle(NULL), MAKEINTRESOURCE(IDB_BITMAP5));
+		hBitmapSnakeHeadLeft = LoadBitmap(GetModuleHandle(NULL), MAKEINTRESOURCE(IDB_BITMAP6));
+		hBitmapSnakeHeadRight = LoadBitmap(GetModuleHandle(NULL), MAKEINTRESOURCE(IDB_BITMAP7));
+		hBitmapSnakeHeadUp = LoadBitmap(GetModuleHandle(NULL), MAKEINTRESOURCE(IDB_BITMAP8));
+
+
 	case WM_LBUTTONDOWN:
-		/*device = getDC(hWnd); //TODO: algo se passa com o getDC
-		TextOut(device, 0, 0, ip, _tcslen(ip));
-		ReleaseDC(hWnd, device);*/
-		MessageBox(hWnd, ip, TEXT("Texto capturado!"), MB_OK);
+		
+		//device = getDC(hWnd); //TODO: algo se passa com o getDC
+		//TextOut(device, 0, 0, ip, _tcslen(ip));
+		//ReleaseDC(hWnd, device);
+		//MessageBox(hWnd, ip, TEXT("Texto capturado!"), MB_OK);
+		InvalidateRect(hWnd, NULL, 0); //TODO: caso necessario, usar o RECT map 
 		break;
 
 	case WM_COMMAND:
 		switch (LOWORD(wParam)) {
+		case ID_TIPODEJOGO_LOCAL:
+
+
 		case ID_TIPODEJOGO_REMOTO:
 			DialogBox(hGlobalInst, IDD_DIALOG2, hWnd, LocalGame);
 			break;
@@ -178,6 +211,32 @@ LRESULT CALLBACK HandleEvents(HWND hWnd, UINT messg, WPARAM wParam, LPARAM lPara
 		}
 		break;
 
+	case WM_PAINT: 
+		device = BeginPaint(hWnd, &pt);
+
+		auxDC = CreateCompatibleDC(device);
+		
+		SelectObject(auxDC, hBitmapFloor);
+
+		for (int i = 0; i < MAP_ROWS; i++) {
+			for (int j = 0; j < MAP_COLUMNS; j++) {
+				BitBlt(device, 5 + 40 * j, 5 + 40*i, 40, 40, auxDC, 0, 0, SRCCOPY);
+			}
+		}
+
+		SelectObject(auxDC, hBitmapFood);
+		BitBlt(device, 5 + 40 * 5, 5 + 40 * 4, 40, 40, auxDC, 0, 0, SRCCOPY);
+		
+		SelectObject(auxDC, hBitmapSnakeHeadRight);
+		BitBlt(device, 5 + 40 * 4, 5 + 40 * 4, 40, 40, auxDC, 0, 0, SRCCOPY);
+		SelectObject(auxDC, hBitmapSnakeBodyHor);
+		BitBlt(device, 5 + 40 * 3, 5 + 40 * 4, 40, 40, auxDC, 0, 0, SRCCOPY);
+		BitBlt(device, 5 + 40 * 2, 5 + 40 * 4, 40, 40, auxDC, 0, 0, SRCCOPY);
+		
+
+		EndPaint(hWnd, &pt);
+		break;
+
 	case WM_CLOSE:
 		if (MessageBox(hWnd, TEXT("Deseja fechar a janela?"), TEXT("Confirmar acção"), MB_YESNO) == IDYES) {
 			PostQuitMessage(0);
@@ -185,7 +244,15 @@ LRESULT CALLBACK HandleEvents(HWND hWnd, UINT messg, WPARAM wParam, LPARAM lPara
 		break;
 
 	case WM_DESTROY:	// Destruir a janela e terminar o programa 
-						// "PostQuitMessage(Exit Status)"		
+						// "PostQuitMessage(Exit Status)"	
+		DeleteObject(hBitmapFood);
+		DeleteObject(hBitmapSnakeBodyHor);
+		DeleteObject(hBitmapSnakeBodyVer);
+		DeleteObject(hBitmapSnakeHeadUp);
+		DeleteObject(hBitmapSnakeHeadLeft);
+		DeleteObject(hBitmapSnakeHeadDown);
+		DeleteObject(hBitmapSnakeHeadRight);
+		DeleteObject(hBitmapFloor);
 		PostQuitMessage(0);
 		break;
 	default:

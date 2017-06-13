@@ -10,7 +10,8 @@ typedef struct Snake {
 	int *bodyRow;		
 	int *bodyColumn;    //1st position -> tail, size position -> head
 	TCHAR direction;
-	bool alive;
-	bool isActive;
-	bool isDrunk;
+	boolean alive;
+	boolean isActive;
+	boolean isDrunk;
+	int effectTimer;
 }Snake;

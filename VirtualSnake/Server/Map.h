@@ -3,7 +3,7 @@
 #include "..\DLL\CommonConstants.h"
 #include "Snake.h"
 
-using namespace std;
+/*using namespace std;
 
 #ifdef UNICODE
 #define tcout wcout
@@ -14,7 +14,7 @@ using namespace std;
 #define tcout cout
 #define tcin cin
 #define tstring string
-#endif
+#endif*/
 
 
 

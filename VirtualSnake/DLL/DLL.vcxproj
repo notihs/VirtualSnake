@@ -147,10 +147,11 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="CommonConstants.h" />
+    <ClInclude Include="CommonStructs.h" />
     <ClInclude Include="dll.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="dll.cpp" />
+    <ClCompile Include="dll.c" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

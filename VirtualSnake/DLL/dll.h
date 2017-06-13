@@ -8,10 +8,10 @@
 // DLL.
 #include <windows.h>
 #include <tchar.h>
-#include <iostream>
+//#include <iostream>
 #include "CommonConstants.h"
 
-using namespace std;
+//using namespace std;
 
 //Definir uma constante para facilitar a leitura do protótipo da função
 //Este .h deve ser incluído no projeto que o vai usar (modo implícito)
@@ -31,37 +31,24 @@ using namespace std;
 #define DLL_IMP_API __declspec(dllimport)
 #endif
 
-#ifdef UNICODE
-#define tcout wcout
-#define tcin wcin
-#define tstring wstring
+extern DLL_IMP_API HANDLE hEventNewClient;
+extern DLL_IMP_API HANDLE hEventKeyPressed[MAX_PLAYERS];
+extern DLL_IMP_API HANDLE hMutexWritingKey[MAX_PLAYERS];
+extern DLL_IMP_API TCHAR *ptrKeysInMemory;
+extern DLL_IMP_API HANDLE hEventGameStarted;
+extern DLL_IMP_API HANDLE hEventServerIsOnline;
+extern DLL_IMP_API HANDLE hEventSnakeDied[MAX_PLAYERS];
 
-#else
-#define tcout cout
-#define tcin cin
-#define tstring string
-#endif
+DLL_IMP_API void initArrayOfKeys();
+DLL_IMP_API void writeMapInMemory(TCHAR ** map);
+DLL_IMP_API void setOwnId(int);
 
+DLL_IMP_API boolean readMapInMemory(TCHAR **);
+DLL_IMP_API int getOwnKeyArrayPosition();
+DLL_IMP_API void newKeyPressed(TCHAR tecla);
 
-	 
-	extern DLL_IMP_API HANDLE hEventNewClient;
-	extern DLL_IMP_API HANDLE hEventKeyPressed[MAX_PLAYERS];
-	extern DLL_IMP_API HANDLE hMutexWritingKey[MAX_PLAYERS];
-	extern DLL_IMP_API TCHAR *ptrKeysInMemory; 
-	extern DLL_IMP_API HANDLE hEventGameStarted;
-	extern DLL_IMP_API HANDLE hEventServerIsOnline;
-	extern DLL_IMP_API HANDLE hEventSnakeDied[MAX_PLAYERS];
-
-	DLL_IMP_API void initArrayOfKeys();
-	DLL_IMP_API void writeMapInMemory(TCHAR ** map);
-
-	DLL_IMP_API bool readMapInMemory(TCHAR **);
-	DLL_IMP_API int getOwnKeyArrayPosition();
-	DLL_IMP_API void newKeyPressed(TCHAR tecla);
-
-	//UTILS
-	DLL_IMP_API void initSynchHandles();
-	DLL_IMP_API void destroyMap();
-	DLL_IMP_API void readKeys();
-	DLL_IMP_API void initMemory();
-
+//UTILS
+DLL_IMP_API void initSynchHandles();
+DLL_IMP_API void destroyMap();
+DLL_IMP_API void readKeys();
+DLL_IMP_API void initMemory();

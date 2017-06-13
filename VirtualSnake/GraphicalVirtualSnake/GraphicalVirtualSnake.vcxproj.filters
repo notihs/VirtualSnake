@@ -33,5 +33,32 @@
     <Image Include="snakeIcon.ico">
       <Filter>Resource Files</Filter>
     </Image>
+    <Image Include="snake_head.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="snake_body.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="food.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="floor.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="snake_body_vertical.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="snake_head_left.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="snake_head_right.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="snake_head_up.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+  </ItemGroup>
+  <ItemGroup>
+    <Library Include="..\Debug\DLL.lib" />
   </ItemGroup>
 </Project>

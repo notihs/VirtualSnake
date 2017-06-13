@@ -15,27 +15,24 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Server.cpp">
+    <ClCompile Include="Server.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Map.cpp">
+    <ClCompile Include="RemoteClient.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Game.cpp">
+    <ClCompile Include="Map.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="LocalClients.cpp">
+    <ClCompile Include="LocalClients.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="RemoteClient.cpp">
+    <ClCompile Include="Game.c">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Map.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Constants.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Includes.h">

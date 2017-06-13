@@ -146,15 +146,14 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="LocalClients.cpp" />
-    <ClCompile Include="Game.cpp" />
-    <ClCompile Include="Map.cpp" />
-    <ClCompile Include="RemoteClient.cpp" />
-    <ClCompile Include="Server.cpp" />
+    <ClCompile Include="LocalClients.c" />
+    <ClCompile Include="Game.c" />
+    <ClCompile Include="Map.c" />
+    <ClCompile Include="RemoteClient.c" />
+    <ClCompile Include="Server.c" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="LocalClients.h" />
-    <ClInclude Include="Constants.h" />
     <ClInclude Include="Includes.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="Map.h" />

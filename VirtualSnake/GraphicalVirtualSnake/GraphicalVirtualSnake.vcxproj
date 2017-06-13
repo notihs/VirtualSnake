@@ -155,7 +155,18 @@
     <ResourceCompile Include="GraphicalVirtualSnake.rc" />
   </ItemGroup>
   <ItemGroup>
+    <Image Include="floor.bmp" />
+    <Image Include="food.bmp" />
     <Image Include="snakeIcon.ico" />
+    <Image Include="snake_body.bmp" />
+    <Image Include="snake_body_vertical.bmp" />
+    <Image Include="snake_head.bmp" />
+    <Image Include="snake_head_left.bmp" />
+    <Image Include="snake_head_right.bmp" />
+    <Image Include="snake_head_up.bmp" />
+  </ItemGroup>
+  <ItemGroup>
+    <Library Include="..\Debug\DLL.lib" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
