@@ -10,6 +10,7 @@ TCHAR pipeWriteName[BUFFER];
 TCHAR pipeReadName[BUFFER];
 HANDLE hPipeWrite;
 HANDLE hPipeRead;
+TCHAR user[BUFFER];
 
 int _tmain(int argc, TCHAR *argv[]) {
 	
@@ -20,12 +21,9 @@ int _tmain(int argc, TCHAR *argv[]) {
 #endif
 
 	TCHAR tecla[BUFFER];
-	TCHAR user[BUFFER];
+	
 	TCHAR ** map; 
 	boolean stayHere;
-
-	//_tprintf(TEXT("Bem-vindo ao Virtual Snake! Escolha o seu username! \n->"));
-	//_fgetts(user, BUFFER, stdin); //NOTA: username vai com \n no fim
 
 	initSynchHandles();
 
@@ -40,12 +38,20 @@ int _tmain(int argc, TCHAR *argv[]) {
 		//tcout << TEXT("Já existe um jogo a decorrer! A aplicação vai fechar");
 		_tprintf(TEXT("Já existe um jogo a decorrer! A aplicação vai fechar"));
 		_tprintf(TEXT("\n\nPressione uma tecla para continuar"));
+		_getch();
 		//tcout << TEXT("\n\nPressione uma tecla para continuar");
-		_fgetts(user, BUFFER, stdin);
+		//_fgetts(user, BUFFER, stdin);
 		return 0;
 	}
 
 	map = initMalloc();
+
+	_tprintf(TEXT("Bem-vindo ao Virtual Snake! Escolha o seu username! \n->"));
+	_fgetts(user, BUFFER, stdin);
+
+	user[_tcscspn(user, TEXT("\n"))] = '\0';
+
+	//(*ptrUsernameInMemory)[0] = TEXT("iajfdsf");
 
 	do {
 		stayHere = FALSE;
@@ -99,6 +105,8 @@ void localGame(TCHAR ** map) {
 		_getch();
 		return;
 	}
+
+	setUsername(user); //TODO: se crashar, pode ser aqui!
 
 	TCHAR *teclas = chooseKeys();
 	

@@ -147,8 +147,10 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Base.c" />
+    <ClCompile Include="Adapter.c" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Adapter.h" />
     <ClInclude Include="resource.h" />
   </ItemGroup>
   <ItemGroup>

@@ -4,6 +4,7 @@
 //#include "DLL.h"
 
 #include "..\..\VirtualSnake\DLL\dll.h"
+#include "CommonStructs.h"
 //Para verificar ao carregar a dll que a aplicação irá ocupar mais memória
 char ponteiro[40960];
 
@@ -50,6 +51,12 @@ TCHAR *ptrKeysInMemory; //LIST OF KEYS:
 									  //l -> left
 									  //r -> right
 									  //- -> dead
+
+//NOMES DOS JOGADORES
+HANDLE hUsernameMemory;
+TCHAR *usernameMemoryName = TEXT("UsernameMemory");
+TCHAR (*ptrUsernameInMemory)[MAX_PLAYERS][TAM];
+
 
 void initSynchHandles() {
 
@@ -98,7 +105,11 @@ void initMemory() {
 	hMapMemory = CreateFileMapping((HANDLE)0xFFFFFFFF, NULL, PAGE_READWRITE, 0
 		, sizeof(TCHAR[MAP_ROWS][MAP_COLUMNS]), mapInMemoryName);
 
-	if (hKeysMemory == NULL || hMapMemory == NULL) {
+	hUsernameMemory = CreateFileMapping((HANDLE)0xFFFFFFFF, NULL, PAGE_READWRITE, 0
+		, sizeof(TCHAR[MAX_PLAYERS][TAM]), usernameMemoryName);
+
+
+	if (hKeysMemory == NULL || hMapMemory == NULL || hUsernameMemory == NULL ){
 		_tprintf(TEXT("[Erro]Criação de objectos do Windows(%d)\n"), GetLastError());
 		return;
 	}
@@ -109,7 +120,10 @@ void initMemory() {
 	ptrMapInMemory = (TCHAR(*)[MAP_ROWS][MAP_COLUMNS])MapViewOfFile(hMapMemory
 		, FILE_MAP_WRITE, 0, 0, sizeof(TCHAR[MAP_ROWS][MAP_COLUMNS]));
 
-	if (ptrKeysInMemory == NULL || ptrMapInMemory == NULL) {
+	ptrUsernameInMemory = (TCHAR(*)[MAX_PLAYERS][TAM])MapViewOfFile(hUsernameMemory
+		, FILE_MAP_WRITE, 0, 0, sizeof(TCHAR[MAX_PLAYERS][TAM]));
+
+	if (ptrKeysInMemory == NULL || ptrMapInMemory == NULL || ptrUsernameInMemory == NULL) {
 		_tprintf(TEXT("[Erro]Mapeamento da memória partilhada(%d)\n"), GetLastError());
 		return;
 	}
@@ -148,6 +162,14 @@ void newKeyPressed(TCHAR tecla) {
 	ReleaseMutex(hMutexWritingKey[ownId]); 
 	SetEvent(hEventKeyPressed[ownId]); // Mete evento a TRUE
 
+}
+
+//TODO: carefull here!
+void setUsername(TCHAR username[TAM]) {
+
+	_tcscpy_s((*ptrUsernameInMemory)[ownId], TAM, username);
+	
+	_tprintf(TEXT("%s"), (*ptrUsernameInMemory)[ownId]);
 }
 
 int getOwnKeyArrayPosition() {
@@ -221,3 +243,38 @@ void destroyMap() {
 	CloseHandle(hKeysMemory);
 }
 
+void readAllKeysOnRegistry() {
+	Highscore highscore;
+	HKEY registryKey;
+	DWORD result;
+	DWORD sizeOfStruct;
+	DWORD dwType = REG_BINARY;
+	TCHAR keyName[10];
+
+	if (RegCreateKeyEx(HKEY_CURRENT_USER, REGISTRY_LOCATION, 0, NULL,
+		REG_OPTION_NON_VOLATILE, KEY_ALL_ACCESS, NULL, &registryKey, &result) != ERROR_SUCCESS) {
+
+		_tprintf(TEXT("Erro ao criar/abrir chave (%d)\n"), GetLastError());
+		return;
+	}
+	else
+	{
+		if (result == REG_OPENED_EXISTING_KEY) {
+			_tprintf(TEXT("Chave: HKEY_CURRENT_USER\\%s aberta\n"), REGISTRY_LOCATION);
+
+			for (int i = 0; i < MAX_SCORES; i++) {
+				
+				_stprintf_s(keyName, 10, TEXT("%d"), i);
+
+				if (RegQueryValueEx(registryKey, keyName, NULL, &dwType, (LPBYTE)&highscore, &sizeOfStruct) != ERROR_SUCCESS) {
+					break;
+				}
+
+				_tprintf(TEXT("ID obtido: %d\nNome Obtido: %s\nScore: %d\n\n\n"), i, highscore.playerName, highscore.score);
+				//TODO: devolve isto! 
+
+			}
+		}
+	}
+	RegCloseKey(registryKey);
+}

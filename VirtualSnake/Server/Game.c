@@ -160,9 +160,9 @@ boolean validMovement(int player, TCHAR keyPressed) {
 
 void tryToMoveSnake(int player, TCHAR keyPressed) {
 
-	int snakeSize = game->snake[player]->size;
-	int headPosColumn = game->snake[player]->bodyColumn[snakeSize - 1];
-	int headPosRow = game->snake[player]->bodyRow[snakeSize - 1];
+	//int snakeSize = game->snake[player]->size;
+	//int headPosColumn = game->snake[player]->bodyColumn[snakeSize - 1];
+	//int headPosRow = game->snake[player]->bodyRow[snakeSize - 1];
 	//TCHAR nextPosition;
 
 	if (keyPressed == 'u') {
@@ -338,8 +338,8 @@ void eatingMovement(int player, int rowMovement, int columnMovement) {
 		game->snake[player]->score += DEFAULT_SCORE;
 	}
 
-	free(auxColumn);
-	free(auxRow);
+	//free(auxColumn);
+	//free(auxRow);
 }
 
 void getFrozen(int player, int rowMovement, int columnMovement) {

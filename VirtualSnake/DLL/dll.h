@@ -38,6 +38,7 @@ extern DLL_IMP_API TCHAR *ptrKeysInMemory;
 extern DLL_IMP_API HANDLE hEventGameStarted;
 extern DLL_IMP_API HANDLE hEventServerIsOnline;
 extern DLL_IMP_API HANDLE hEventSnakeDied[MAX_PLAYERS];
+extern DLL_IMP_API TCHAR(*ptrUsernameInMemory)[MAX_PLAYERS][TAM];
 
 DLL_IMP_API void initArrayOfKeys();
 DLL_IMP_API void writeMapInMemory(TCHAR ** map);
@@ -52,3 +53,8 @@ DLL_IMP_API void initSynchHandles();
 DLL_IMP_API void destroyMap();
 DLL_IMP_API void readKeys();
 DLL_IMP_API void initMemory();
+
+
+DLL_IMP_API void readAllKeysOnRegistry();
+
+DLL_IMP_API void setUsername(TCHAR username[TAM]);

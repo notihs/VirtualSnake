@@ -1,4 +1,4 @@
-﻿  RemoteClient.c
-c:\users\daniel simões\dropbox\so2 - 2016-2017\trabalho\virtualsnake\server\remoteclient.c(186): warning C4244: 'function': conversion from 'float' to 'DWORD', possible loss of data
+﻿  LocalClients.c
+c:\users\daniel simões\dropbox\so2 - 2016-2017\trabalho\virtualsnake\server\localclients.c(49): warning C4244: 'function': conversion from 'float' to 'DWORD', possible loss of data
   Server.vcxproj -> C:\Users\Daniel Simões\Dropbox\SO2 - 2016-2017\Trabalho\VirtualSnake\Debug\Server.exe
   Server.vcxproj -> C:\Users\Daniel Simões\Dropbox\SO2 - 2016-2017\Trabalho\VirtualSnake\Debug\Server.pdb (Full PDB)

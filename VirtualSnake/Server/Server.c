@@ -44,6 +44,18 @@ int _tmain(int argc, TCHAR *argv[]) {
 	initSynchHandles();
 	initArrayOfKeys();
 
+
+/*
+	writeOnRegistry(TEXT("Daniel"), 10);
+	writeOnRegistry(TEXT("Teste2"), 20);
+	writeOnRegistry(TEXT("123"), 9);
+	writeOnRegistry(TEXT("Plyaer xopthu"), 21);
+	writeOnRegistry(TEXT("ratata"), 12);
+
+	readAllKeysOnRegistry();
+
+	*/
+
 	//CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)waitForLocalClients, (LPVOID)hEventNewClient, 0, NULL); //Clients.cpp
 	CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)waitForLocalClients, (LPVOID)copyOfGame, 0, NULL); 
 
@@ -121,4 +133,3 @@ void createCopyOfGame(Game * copyOfGame) {
 	showMap(getCurrentGame()->map);*/
 
 }
-

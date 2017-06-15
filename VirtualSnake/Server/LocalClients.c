@@ -57,10 +57,24 @@ DWORD WINAPI moveSnakeToDirectionLocal(LPVOID param) {
 		}
 	} while (snake->alive);
 
+
+
 	//SetEvent(hEventSnakeDied[snake->id]); 
 	//ptrKeysInMemory[snake->id] = '-';
 
 	//tcout << TEXT("rip");
+	_tprintf(TEXT("Score da cobra %d -> %d"), snake->id, snake->score);
+
+
+	TCHAR username[TAM];
+
+	_tcscpy_s(username, TAM, (*ptrUsernameInMemory)[snake->id]);
+	
+	_tprintf(TEXT("Username capturado: %s"), username);
+
+	writeOnRegistry(username, snake->score);
+
+	readAllKeysOnRegistry();
 
 	return TRUE;
 }

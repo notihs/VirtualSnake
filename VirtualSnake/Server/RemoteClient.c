@@ -196,6 +196,7 @@ DWORD WINAPI moveSnakeToDirectionRemote(LPVOID param) {
 
 	//SetEvent(hEventSnakeDied[snake->id]);
 
+
 	return TRUE;
 }
 

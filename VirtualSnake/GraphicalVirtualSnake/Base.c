@@ -4,6 +4,7 @@
 #include "resource.h"
 #include "..\DLL\CommonConstants.h"
 #include "..\DLL\dll.h"
+#include "Adapter.h"
 
 /* ===================================================== */
 /* Programa base (esqueleto) para aplicações Windows     */
@@ -20,13 +21,23 @@
 LRESULT CALLBACK HandleEvents(HWND, UINT, WPARAM, LPARAM);
 BOOL CALLBACK About(HWND, UINT, WPARAM, LPARAM);
 BOOL CALLBACK LocalGame(HWND, UINT, WPARAM, LPARAM);
+BOOL CALLBACK RemoteGame(HWND, UINT, WPARAM, LPARAM);
+BOOL CALLBACK DefineKeys(HWND, UINT, WPARAM, LPARAM);
+
 // Nome da classe da janela (para programas de uma só janela, normalmente este nome é 
 // igual ao do próprio programa) "szprogName" é usado mais abaixo na definição das 
 // propriedades do objecto janela
 
+//GLOBAIS
 TCHAR *szProgName = TEXT("VirtualSnake");
 HINSTANCE hGlobalInst;
 static TCHAR ip[100];
+static TCHAR username[TAM];
+static TCHAR up, left, right, down;
+static boolean defaultKeys = TRUE;
+TCHAR ** map;
+
+
 // ============================================================================
 // FUNÇÃO DE INÍCIO DO PROGRAMA: WinMain()
 // ============================================================================
@@ -168,6 +179,12 @@ LRESULT CALLBACK HandleEvents(HWND hWnd, UINT messg, WPARAM wParam, LPARAM lPara
 	switch (messg) {
 
 	case WM_CREATE:
+
+		if (!onCreate()) {
+			MessageBox(hWnd, TEXT("Erro ao inicializar!"), TEXT("Erro"), MB_OK);
+			exit(-1);
+		}
+
 		map.left = 0;
 		map.top = 0;
 		map.bottom = 300;
@@ -186,27 +203,32 @@ LRESULT CALLBACK HandleEvents(HWND hWnd, UINT messg, WPARAM wParam, LPARAM lPara
 		hBitmapSnakeHeadRight = LoadBitmap(GetModuleHandle(NULL), MAKEINTRESOURCE(IDB_BITMAP7));
 		hBitmapSnakeHeadUp = LoadBitmap(GetModuleHandle(NULL), MAKEINTRESOURCE(IDB_BITMAP8));
 
+		
+		break;
 
 	case WM_LBUTTONDOWN:
 		
-		//device = getDC(hWnd); //TODO: algo se passa com o getDC
-		//TextOut(device, 0, 0, ip, _tcslen(ip));
-		//ReleaseDC(hWnd, device);
-		//MessageBox(hWnd, ip, TEXT("Texto capturado!"), MB_OK);
-		InvalidateRect(hWnd, NULL, 0); //TODO: caso necessario, usar o RECT map 
+
+		MessageBox(hWnd, up, TEXT("wrwerwer"), MB_YESNO);
+		//InvalidateRect(hWnd, NULL, 0); //TODO: caso necessario, usar o RECT map 
 		break;
 
 	case WM_COMMAND:
 		switch (LOWORD(wParam)) {
-		case ID_TIPODEJOGO_LOCAL:
+		case ID_CONTROLOS:
+			//DialogBox(hGlobalInst, IDD_DIALOG_TECLAS, hWnd, DefineKeys);
+			break;
 
+		case ID_TIPODEJOGO_LOCAL:
+			DialogBox(hGlobalInst, IDD_DIALOG_LOCAL, hWnd, LocalGame);
+			break;
 
 		case ID_TIPODEJOGO_REMOTO:
-			DialogBox(hGlobalInst, IDD_DIALOG2, hWnd, LocalGame);
+			DialogBox(hGlobalInst, IDD_DIALOG_REMOTO, hWnd, RemoteGame);
 			break;
 
 		case ID_SOBRE:
-			DialogBox(hGlobalInst, IDD_DIALOG1, hWnd, About);
+			DialogBox(hGlobalInst, IDD_DIALOG_SOBRE, hWnd, About);
 			break;
 		}
 		break;
@@ -287,6 +309,41 @@ BOOL CALLBACK About(HWND hWnd, UINT messg, WPARAM wParam, LPARAM lParam) {
 }
 
 BOOL CALLBACK LocalGame(HWND hWnd, UINT messg, WPARAM wParam, LPARAM lParam) {
+	switch (messg) {
+
+	case WM_COMMAND:
+		switch (LOWORD(wParam)) {
+
+		case IDOK:
+			GetDlgItemText(hWnd, IDC_EDIT1, username, TAM);
+
+			if(_tcscmp(username, ""))
+			{
+				localGame();
+				EndDialog(hWnd, 0);
+				return TRUE;
+			}
+			break;
+
+		case IDCANCEL:
+			EndDialog(hWnd, 0);
+			return FALSE;
+			break;
+
+		case WM_CLOSE:
+			EndDialog(hWnd, 0);
+			return FALSE;
+			break;
+		}
+
+		break;
+	}
+
+	return FALSE;
+
+}
+
+BOOL CALLBACK RemoteGame(HWND hWnd, UINT messg, WPARAM wParam, LPARAM lParam) {
 
 	switch (messg) {
 
@@ -316,4 +373,174 @@ BOOL CALLBACK LocalGame(HWND hWnd, UINT messg, WPARAM wParam, LPARAM lParam) {
 
 
 	return FALSE;
+}
+
+
+//TODO: fix this 
+BOOL CALLBACK DefineKeys(HWND hWnd, UINT messg, WPARAM wParam, LPARAM lParam) {
+
+	static boolean upPressed;
+	static boolean downPressed;
+	static boolean leftPressed;
+	static boolean rightPressed;
+	int total = 0;
+
+	switch (messg) {
+
+	case WM_COMMAND:
+		switch (LOWORD(wParam)) {
+		case IDC_BUTTON_DOWN:
+			down = _getch();
+			//upPressed = TRUE;
+			break;
+		case IDC_BUTTON_UP:
+			up = _getch();
+			//downPressed = TRUE;
+			break;
+		case IDC_BUTTON_LEFT:
+			left = _getch();
+			//total++;
+			break;
+		case IDC_BUTTON_RIGHT:
+			right = _getch();
+			//total++;
+			break;
+
+		case IDOK:
+			if (total < 4) {
+				if (MessageBox(hWnd, TEXT("As teclas nao foram todas configuradas. Deseja continuar e usar as default?"), TEXT("Confirmar acção"), MB_YESNO) == IDYES) {
+					defaultKeys = TRUE;
+					EndDialog(hWnd, 0);
+				}
+			}
+			else {
+
+			}
+		case IDCANCEL:
+			if (total < 4) {
+				if (MessageBox(hWnd, TEXT("As teclas nao foram todas configuradas. Deseja continuar e usar as default?"), TEXT("Confirmar acção"), MB_YESNO) == IDYES) {
+					defaultKeys = TRUE;
+					EndDialog(hWnd, 0);
+				}
+			}
+		}
+		break;
+
+	case WM_CLOSE:
+		if (total < 4) {
+			if (MessageBox(hWnd, TEXT("As teclas nao foram todas configuradas. Deseja continuar e usar as default?"), TEXT("Confirmar acção"), MB_YESNO) == IDYES) {
+				defaultKeys = TRUE;
+				EndDialog(hWnd, 0);
+			}
+		
+		}
+
+	}
+}
+
+
+
+
+
+
+//LOGIC PART
+
+boolean onCreate() {
+
+	initSynchHandles();
+
+	if (!WaitForSingleObject(hEventGameStarted, WAIT_TIMEOUT)) {
+		_tprintf(TEXT("Já existe um jogo a decorrer! A aplicação vai fechar"));
+		_tprintf(TEXT("\n\nPressione uma tecla para continuar"));
+		_getch();
+		return FALSE;
+	}
+
+	map = initMalloc();
+
+	return TRUE;
+}
+
+
+TCHAR ** initMalloc() {
+
+	TCHAR ** map = (TCHAR **)malloc(MAP_ROWS * sizeof(TCHAR *));
+	if (map == NULL) {
+		//tcout << TEXT("Erro na alocacao de memoria de TCHAR** (map) !");
+		_tprintf(TEXT("Erro na alocacao de memoria de TCHAR** (map) !"));
+		exit(0);
+	}
+
+	for (int i = 0; i < MAP_ROWS; i++) {
+		map[i] = (TCHAR *)malloc(MAP_COLUMNS * sizeof(TCHAR));
+		if (map == NULL) {
+			//tcout << TEXT("Erro na alocacao de memoria de TCHAR* (map) !");
+			_tprintf(TEXT("Erro na alocacao de memoria de TCHAR* (map) !"));
+			exit(0);
+		}
+	}
+
+	return map;
+}
+
+
+boolean localGame() {
+
+	//	TCHAR up, down, left, right;
+	//TCHAR res;
+
+	initMemory();
+
+
+	if (getOwnKeyArrayPosition() == -1) {
+		return FALSE;
+	}
+
+	setUsername(username);
+
+	//TCHAR *teclas = chooseKeys();
+
+	WaitForSingleObject(hEventGameStarted, INFINITE);
+
+	CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)WaitForMapChanges, (LPVOID)map, 0, NULL);
+
+	/*while (1) {
+
+	TCHAR aux = keyPress(teclas);
+
+	if (aux != ' ') {
+	newKeyPressed(aux);
+	}
+
+	}*/
+}
+
+DWORD WINAPI WaitForMapChanges(LPVOID param) {
+
+	TCHAR ** map = (TCHAR **)param;
+	boolean alive = TRUE;
+
+	while (readMapInMemory(map)) {
+		//tcout << TEXT("Vou ler!") << endl;
+		//alive = ;
+		//tcout << TEXT("Ja li!") << endl;
+		//system("cls");		//clrscr();
+
+		for (int i = 0; i < MAP_ROWS; i++) {
+			for (int j = 0; j < MAP_COLUMNS; j++) {
+				//tcout << map[i][j];
+				//_tprintf(TEXT("%c"), map[i][j]);
+				//MessageBox()
+			}
+			//tcout << endl;
+			_tprintf(TEXT("\n"));
+		}
+	}
+
+	//tcout << TEXT("Morri! apresenta o score!");
+	_tprintf(TEXT("Morri! apresenta o score!"));
+
+	return TRUE;
+
+
 }

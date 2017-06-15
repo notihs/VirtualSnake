@@ -8,6 +8,7 @@
 #include "..\DLL\CommonConstants.h"
 #include "..\DLL\dll.h"
 #include "Includes.h"
+#include "Registry.h"
 
 //#define MAX_CLIENTS 10
 

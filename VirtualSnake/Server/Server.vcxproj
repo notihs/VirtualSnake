@@ -149,6 +149,7 @@
     <ClCompile Include="LocalClients.c" />
     <ClCompile Include="Game.c" />
     <ClCompile Include="Map.c" />
+    <ClCompile Include="Registry.c" />
     <ClCompile Include="RemoteClient.c" />
     <ClCompile Include="Server.c" />
   </ItemGroup>
@@ -157,6 +158,7 @@
     <ClInclude Include="Includes.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="Map.h" />
+    <ClInclude Include="Registry.h" />
     <ClInclude Include="RemoteClient.h" />
     <ClInclude Include="Server.h" />
     <ClInclude Include="Snake.h" />

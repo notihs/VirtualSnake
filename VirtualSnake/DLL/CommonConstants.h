@@ -28,8 +28,8 @@
 
 //RARITY OF OBJECTS in %
 #define COMMON 80 
-#define UNCOMMON 70
-#define RARE 60
+#define UNCOMMON 60
+#define RARE 45
 
 //SNAKE
 #define SNAKE_INITIAL_SIZE 3
@@ -47,3 +47,7 @@
 #define PIPE_CLIENT TEXT("\\\\.\\pipe\\client") 
 #define N_PIPES 4
 
+//REGISTRY
+#define REGISTRY_LOCATION TEXT("Software\\VirtualSnake")
+//#define KEY_NAME TEXT("VirtualSnakeHighscores")
+#define MAX_SCORES 10
